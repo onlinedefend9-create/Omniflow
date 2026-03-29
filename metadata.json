@@ -1,0 +1,8 @@
+{
+  "name": "OmniPost - Multi-Platform Content Adapter",
+  "description": "Adapt your media and captions for TikTok, Instagram, X, LinkedIn, and Threads using AI.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
