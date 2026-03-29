@@ -1,8 +1,9 @@
 {
-  "name": "OmniPost - Multi-Platform Content Adapter",
-  "description": "Adapt your media and captions for TikTok, Instagram, X, LinkedIn, and Threads using AI.",
+  "name": "OmniFlow",
+  "description": "Plateforme de multi-publication sociale automatique (TikTok, YouTube, Meta, X, LinkedIn, Telegram) avec gestion OAuth2.",
   "requestFramePermissions": [
     "camera",
-    "microphone"
+    "microphone",
+    "geolocation"
   ]
 }
