@@ -1,6 +1,6 @@
 {
-  "name": "OmniFlow",
-  "description": "Plateforme de multi-publication sociale automatique (TikTok, YouTube, Meta, X, LinkedIn, Telegram) avec gestion OAuth2.",
+  "name": "OneFlow",
+  "description": "SaaS de multi-publication centralisé pour réseaux sociaux (YouTube, TikTok, Meta, X, LinkedIn, Telegram, Pinterest, Reddit).",
   "requestFramePermissions": [
     "camera",
     "microphone",
