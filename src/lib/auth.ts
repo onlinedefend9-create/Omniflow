@@ -79,6 +79,7 @@ if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET) {
     },
     clientId: process.env.TIKTOK_CLIENT_KEY,
     clientSecret: process.env.TIKTOK_CLIENT_SECRET,
+    allowDangerousEmailAccountLinking: true,
   });
 } else {
   console.warn("⚠️ Missing TIKTOK_CLIENT_KEY or TIKTOK_CLIENT_SECRET");
@@ -89,38 +90,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: providers as import("next-auth/providers").Provider[],
   secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "fallback_secret_for_development_only_12345",
   trustHost: true,
-  session: {
-    strategy: "jwt",
-  },
-  cookies: {
-    sessionToken: {
-      name: `__Secure-authjs.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'none',
-        path: '/',
-        secure: true,
-      },
-    },
-    callbackUrl: {
-      name: `__Secure-authjs.callback-url`,
-      options: {
-        sameSite: 'none',
-        path: '/',
-        secure: true,
-      },
-    },
-    csrfToken: {
-      name: `__Host-authjs.csrf-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'none',
-        path: '/',
-        secure: true,
-      },
-    },
-  },
+  basePath: "/api/auth",
   callbacks: {
+    async signIn({ account }) {
+      if (account && account.error) {
+        console.error(`Error during signIn for provider ${account.provider}:`, account.error);
+        return false;
+      }
+      return true;
+    },
     async jwt({ token, account, user }) {
       if (account) {
         const accounts = (token.accounts as Record<string, unknown>) || {};
