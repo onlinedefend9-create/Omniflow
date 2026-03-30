@@ -64,7 +64,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${geist.variable}`}>
       <head>
-        <meta name="tiktok-developers-site-verification" content="8FSW6cpcKS8HpxExkdhrq6rc9cljZRja" />
+        <meta name="tiktok-developers-site-verification" content="1NN0n1viZIBsPmHOlNFFcR4TLxonnf2U" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
