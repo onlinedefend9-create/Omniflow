@@ -26,14 +26,14 @@ export default function PrivacyPage() {
           className="text-center space-y-8"
         >
           <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass-card border-white/10 backdrop-blur-xl">
-            <ShieldCheck className="w-4 h-4 text-sky-blue" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-sky-blue">Security Protocol v3.0</span>
+            <ShieldCheck className="w-4 h-4 text-accent" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent">Security Protocol v3.0</span>
           </div>
           <h1 className="text-6xl md:text-8xl font-display font-black text-white tracking-tighter leading-none">
             Privacy <span className="shiny-text">Policy.</span>
           </h1>
           <p className="max-w-2xl mx-auto text-slate-400 font-medium text-xl leading-relaxed">
-            Last updated: March 30, 2026. Your data security is the core of OneFlow's engine.
+            Last updated: March 30, 2026. Your data security is the core of OneFlow&apos;s engine.
           </p>
         </motion.header>
 
@@ -43,12 +43,12 @@ export default function PrivacyPage() {
           variants={revealVariants}
           className="glass-card p-12 md:p-20 rounded-[60px] border border-white/5 space-y-16 relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-sky-blue/5 via-transparent to-indigo-600/5 -z-10" />
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-accent-hover/5 -z-10" />
           
           <section className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-sky-blue/10 flex items-center justify-center">
-                <Lock className="w-5 h-5 text-sky-blue" />
+              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+                <Lock className="w-5 h-5 text-accent" />
               </div>
               <h2 className="text-2xl font-display font-black text-white uppercase tracking-widest">1. Data Collection</h2>
             </div>
@@ -61,8 +61,8 @@ export default function PrivacyPage() {
 
           <section className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center">
-                <Eye className="w-5 h-5 text-indigo-400" />
+              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+                <Eye className="w-5 h-5 text-accent" />
               </div>
               <h2 className="text-2xl font-display font-black text-white uppercase tracking-widest">2. Data Usage</h2>
             </div>
@@ -74,7 +74,7 @@ export default function PrivacyPage() {
 
           <section className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
                 <Zap className="w-5 h-5 text-purple-400" />
               </div>
               <h2 className="text-2xl font-display font-black text-white uppercase tracking-widest">3. Security Infrastructure</h2>
@@ -106,7 +106,7 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-display font-black text-white uppercase tracking-widest">5. Contact Support</h2>
             </div>
             <p className="text-slate-400 text-lg leading-relaxed font-medium">
-              For any questions regarding our privacy policy, contact us at: <span className="text-sky-blue font-bold">support@oneflow.site</span>
+              For any questions regarding our privacy policy, contact us at: <span className="text-accent font-bold">support@oneflow.site</span>
             </p>
           </section>
         </motion.article>

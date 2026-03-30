@@ -8,11 +8,12 @@ import { PrismaClient } from "@prisma/client";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const connectionString = process.env.PRISMA_DATABASE_URL || process.env.POSTGRES_URL || process.env.DATABASE_URL;
+const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-const providers: any[] = [];
+const providers: unknown[] = [];
 
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   providers.push(Google({
@@ -65,7 +66,7 @@ if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET) {
     },
     token: "https://open.tiktokapis.com/v2/oauth/token/",
     userinfo: "https://open.tiktokapis.com/v2/user/info/",
-    profile(profile: any) {
+    profile(profile: { data: { user: { open_id: string; display_name: string; email: string; avatar_url: string } } }) {
       return {
         id: profile.data.user.open_id,
         name: profile.data.user.display_name,
@@ -82,7 +83,7 @@ if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET) {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: NextAuthPrismaAdapter(prisma),
-  providers,
+  providers: providers as import("next-auth/providers").Provider[],
   secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "fallback_secret_for_development_only_12345",
   trustHost: true,
   session: {
@@ -119,8 +120,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, account, user }) {
       if (account) {
-        token.accounts = (token.accounts as any) || {};
-        (token.accounts as any)[account.provider] = {
+        const accounts = (token.accounts as Record<string, unknown>) || {};
+        accounts[account.provider] = {
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           expiresAt: account.expires_at,
@@ -131,14 +132,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             image: user?.image,
           }
         };
+        token.accounts = accounts;
         token.primaryProvider = account.provider;
       }
       return token;
     },
-    async session({ session, token }: any) {
-      session.accounts = token.accounts;
-      session.primaryProvider = token.primaryProvider;
-      return session;
+    async session({ session, token }) {
+      return {
+        ...session,
+        accounts: token.accounts,
+        primaryProvider: token.primaryProvider,
+      };
     },
   },
 });

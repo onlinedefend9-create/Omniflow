@@ -6,9 +6,9 @@
   --color-background: #09090b;
   --color-foreground: #ffffff;
   --color-accent: #ff007f;
-  --color-accent-hover: #ff3399; /* Lighter pink for hover */
-  --color-surface: #121214;
-  --color-border: rgba(255, 255, 255, 0.1);
+  --color-accent-hover: #ff3399;
+  --color-surface: #000000;
+  --color-border: rgba(255, 0, 127, 0.2);
 }
 
 :root {
@@ -25,17 +25,23 @@ body {
 
 /* Minimalist Luxurious Glassmorphism */
 .glass-card {
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--color-border);
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .glass-card:hover {
-  background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 0, 127, 0.4);
-  box-shadow: 0 0 30px rgba(255, 0, 127, 0.1);
+  box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
   transform: translateY(-4px);
+}
+
+.glow-pink {
+  transition: all 0.3s ease;
+}
+
+.glow-pink:hover {
+  box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
 }
 
 /* Button Transitions */
@@ -81,7 +87,7 @@ body {
 .glass-nav {
   background: rgba(9, 9, 11, 0.8);
   backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Smooth Scroll */

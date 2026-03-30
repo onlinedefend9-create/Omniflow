@@ -60,8 +60,8 @@ export default function DeleteAccountPage() {
 
           <section className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center">
-                <Database className="w-5 h-5 text-indigo-400" />
+              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+                <Database className="w-5 h-5 text-accent" />
               </div>
               <h2 className="text-2xl font-display font-black text-white uppercase tracking-widest">2. Data Removed</h2>
             </div>
@@ -69,16 +69,16 @@ export default function DeleteAccountPage() {
               Upon account deletion, we erase from our servers:
             </p>
             <ul className="grid md:grid-cols-2 gap-4 text-slate-400 font-bold uppercase tracking-widest text-[10px]">
-              <li className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5"><Zap className="w-4 h-4 text-sky-blue" /> OAuth2 Access Tokens</li>
-              <li className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5"><Zap className="w-4 h-4 text-sky-blue" /> Profile Information</li>
-              <li className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5"><Zap className="w-4 h-4 text-sky-blue" /> Publication History</li>
-              <li className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5"><Zap className="w-4 h-4 text-sky-blue" /> Custom Preferences</li>
+              <li className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5"><Zap className="w-4 h-4 text-accent" /> OAuth2 Access Tokens</li>
+              <li className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5"><Zap className="w-4 h-4 text-accent" /> Profile Information</li>
+              <li className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5"><Zap className="w-4 h-4 text-accent" /> Publication History</li>
+              <li className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5"><Zap className="w-4 h-4 text-accent" /> Custom Preferences</li>
             </ul>
           </section>
 
           <section className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
                 <Clock className="w-5 h-5 text-purple-400" />
               </div>
               <h2 className="text-2xl font-display font-black text-white uppercase tracking-widest">3. Deletion Timeline</h2>
@@ -114,7 +114,7 @@ export default function DeleteAccountPage() {
                   className="flex items-center justify-between p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-all group"
                 >
                   <span className="text-sm font-bold text-white">{platform.name}</span>
-                  <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-sky-blue transition-colors" />
+                  <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-accent transition-colors" />
                 </a>
               ))}
             </div>

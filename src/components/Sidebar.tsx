@@ -5,7 +5,6 @@ import { motion } from "motion/react"
 import { 
   Youtube, 
   Facebook, 
-  Instagram, 
   Twitter, 
   Linkedin, 
   Send, 
@@ -35,7 +34,7 @@ export function Sidebar() {
       initial={false}
       animate={{ width: isCollapsed ? 80 : 280 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="h-screen bg-[#09090b] border-r border-[rgba(255,255,255,0.1)] flex flex-col py-6 sticky top-0"
+      className="h-screen bg-black border-r border-[#FF007F] flex flex-col py-6 sticky top-0"
     >
       <div className="flex items-center justify-between px-6 mb-10">
         {!isCollapsed && (
@@ -50,7 +49,7 @@ export function Sidebar() {
         )}
         <button 
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="text-white hover:text-[#FF007F] transition-colors duration-200 focus:outline-none"
+          className="text-white hover:text-[#FF007F] transition-colors duration-200 focus:outline-none glow-pink rounded-full p-1"
         >
           <Menu size={24} strokeWidth={1.5} />
         </button>
@@ -61,12 +60,12 @@ export function Sidebar() {
           <Link 
             key={item.name} 
             href={item.href}
-            className="flex items-center px-2 py-3 rounded-lg text-white hover:text-[#FF007F] hover:bg-[rgba(255,255,255,0.05)] transition-all duration-200 group"
+            className="flex items-center px-2 py-3 rounded-lg text-white hover:text-[#FF007F] hover:bg-[rgba(255,0,127,0.1)] transition-all duration-200 group glow-pink"
           >
             <item.icon 
               size={24} 
               strokeWidth={1.5} 
-              className="flex-shrink-0 group-hover:text-[#FF007F] transition-colors duration-200" 
+              className="flex-shrink-0 group-hover:text-[#FF007F] transition-colors duration-200 group-hover:drop-shadow-[0_0_8px_rgba(255,0,127,0.8)]" 
             />
             {!isCollapsed && (
               <motion.span 

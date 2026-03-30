@@ -5,8 +5,6 @@ import {
   Zap, 
   Share2, 
   Globe, 
-  ShieldCheck, 
-  Sparkles, 
   ArrowRight,
   CheckCircle2,
   Twitter,
@@ -17,8 +15,7 @@ import {
   Music2,
   MessageSquare,
   BarChart3,
-  RefreshCcw,
-  Layers
+  RefreshCcw
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { cn } from "@/lib/utils";
@@ -45,7 +42,7 @@ const platforms = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen text-slate-200 font-sans selection:bg-sky-blue/30 relative">
+    <div className="min-h-screen text-slate-200 font-sans selection:bg-accent/30 relative">
       <Navbar />
 
       {/* Hero Section */}
@@ -56,8 +53,8 @@ export default function LandingPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass-card border-white/10 backdrop-blur-xl"
           >
-            <Zap className="w-4 h-4 text-sky-blue fill-sky-blue" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-sky-blue">Engineered for Global Impact</span>
+            <Zap className="w-4 h-4 text-accent fill-accent" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent">Engineered for Global Impact</span>
           </motion.div>
 
           <motion.h1 
@@ -88,7 +85,7 @@ export default function LandingPage() {
           >
             <Link 
               href="/dashboard"
-              className="px-12 py-6 bg-white text-onyx rounded-2xl font-display font-black text-xl flex items-center gap-4 hover:bg-sky-blue hover:text-white transition-all shadow-2xl shadow-white/10"
+              className="px-12 py-6 bg-white text-black rounded-2xl font-display font-black text-xl flex items-center gap-4 hover:bg-accent hover:text-white transition-all shadow-2xl shadow-white/10"
             >
               Open Studio
               <ArrowRight className="w-6 h-6" />
@@ -121,9 +118,9 @@ export default function LandingPage() {
       </section>
 
       {/* Trusted By Marquee */}
-      <section className="py-20 border-y border-white/5 bg-onyx/50 overflow-hidden relative">
+      <section className="py-20 border-y border-white/5 bg-black/50 overflow-hidden relative">
         <div className="max-w-7xl mx-auto px-6 mb-10">
-          <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-600 text-center">Fueling the world's top creators</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-600 text-center">Fueling the world&apos;s top creators</p>
         </div>
         <div className="flex gap-20 animate-marquee whitespace-nowrap">
           {[...platforms, ...platforms].map((p, i) => (
@@ -160,9 +157,9 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="md:col-span-8 glass-card glass-card-hover p-16 rounded-[48px] space-y-10 relative overflow-hidden group"
             >
-              <div className="absolute top-0 right-0 w-96 h-96 bg-sky-blue/5 blur-[120px] rounded-full -z-10 group-hover:bg-sky-blue/10 transition-all duration-700" />
-              <div className="w-20 h-20 rounded-3xl bg-sky-blue/10 flex items-center justify-center">
-                <Share2 className="w-10 h-10 text-sky-blue" />
+              <div className="absolute top-0 right-0 w-96 h-96 bg-accent/5 blur-[120px] rounded-full -z-10 group-hover:bg-accent/10 transition-all duration-700" />
+              <div className="w-20 h-20 rounded-3xl bg-accent/10 flex items-center justify-center">
+                <Share2 className="w-10 h-10 text-accent" />
               </div>
               <div className="space-y-6">
                 <h3 className="text-4xl md:text-5xl font-display font-black text-white leading-none">One-Click Publishing</h3>
@@ -186,8 +183,8 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="md:col-span-4 glass-card glass-card-hover p-12 rounded-[48px] space-y-8 group"
             >
-              <div className="w-16 h-16 rounded-3xl bg-purple-500/10 flex items-center justify-center">
-                <BarChart3 className="w-8 h-8 text-purple-500" />
+              <div className="w-16 h-16 rounded-3xl bg-accent/10 flex items-center justify-center">
+                <BarChart3 className="w-8 h-8 text-accent" />
               </div>
               <div className="space-y-4">
                 <h3 className="text-2xl font-display font-bold text-white">Smart Analytics</h3>
@@ -202,7 +199,7 @@ export default function LandingPage() {
                     initial={{ height: 0 }}
                     whileInView={{ height: `${h}%` }}
                     transition={{ delay: i * 0.1, duration: 1 }}
-                    className="flex-1 bg-gradient-to-t from-purple-600 to-sky-blue rounded-t-lg"
+                    className="flex-1 bg-gradient-to-t from-accent to-accent rounded-t-lg"
                   />
                 ))}
               </div>
@@ -236,13 +233,13 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="md:col-span-6 glass-card glass-card-hover p-12 rounded-[48px] space-y-8 group"
             >
-              <div className="w-16 h-16 rounded-3xl bg-indigo-500/10 flex items-center justify-center">
-                <Globe className="w-8 h-8 text-indigo-500" />
+              <div className="w-16 h-16 rounded-3xl bg-accent/10 flex items-center justify-center">
+                <Globe className="w-8 h-8 text-accent" />
               </div>
               <div className="space-y-4">
                 <h3 className="text-2xl font-display font-bold text-white">Global Reach</h3>
                 <p className="text-slate-500 text-sm leading-relaxed">
-                  Break borders. OneFlow's infrastructure is designed for worldwide content distribution 
+                  Break borders. OneFlow&apos;s infrastructure is designed for worldwide content distribution 
                   with localized optimization.
                 </p>
               </div>
@@ -252,7 +249,7 @@ export default function LandingPage() {
       </section>
 
       {/* Social Module Connector Preview */}
-      <section className="py-40 px-6 bg-onyx/30">
+      <section className="py-40 px-6 bg-black/30">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-24 items-center">
           <motion.div 
             variants={revealVariants}
@@ -263,12 +260,12 @@ export default function LandingPage() {
           >
             <div className="space-y-4">
               <h2 className="text-5xl md:text-7xl font-display font-black text-white tracking-tighter leading-none">
-                Connect on <span className="text-sky-blue">Demand.</span>
+                Connect on <span className="text-accent">Demand.</span>
               </h2>
               <p className="text-slate-500 font-bold uppercase tracking-[0.3em] text-xs">Modular Social Integration</p>
             </div>
             <p className="text-xl text-slate-400 leading-relaxed">
-              No complex setups. Connect your social identities as modular "Power Switches". 
+              No complex setups. Connect your social identities as modular &quot;Power Switches&quot;. 
               Activate or deactivate platforms instantly based on your campaign needs.
             </p>
             <div className="space-y-6">
@@ -278,8 +275,8 @@ export default function LandingPage() {
                 "Real-time Connection Status"
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4">
-                  <div className="w-6 h-6 rounded-full bg-sky-blue/20 flex items-center justify-center">
-                    <CheckCircle2 className="w-4 h-4 text-sky-blue" />
+                  <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center">
+                    <CheckCircle2 className="w-4 h-4 text-accent" />
                   </div>
                   <span className="font-bold text-slate-300">{item}</span>
                 </div>
@@ -288,17 +285,17 @@ export default function LandingPage() {
           </motion.div>
 
           <div className="relative">
-            <div className="absolute inset-0 bg-sky-blue/20 blur-[120px] rounded-full -z-10" />
+            <div className="absolute inset-0 bg-accent/20 blur-[120px] rounded-full -z-10" />
             <div className="glass-card p-12 rounded-[60px] border-white/10 grid grid-cols-2 gap-6">
               {platforms.slice(0, 4).map((p, i) => (
                 <div key={i} className="p-8 rounded-[32px] bg-white/5 border border-white/10 flex flex-col items-center gap-6 group">
-                  <p.icon className="w-10 h-10 text-slate-400 group-hover:text-sky-blue transition-colors" />
-                  <div className="w-12 h-6 bg-slate-800 rounded-full relative p-1 cursor-pointer group-hover:bg-sky-blue/20 transition-all">
+                  <p.icon className="w-10 h-10 text-slate-400 group-hover:text-accent transition-colors" />
+                  <div className="w-12 h-6 bg-slate-800 rounded-full relative p-1 cursor-pointer group-hover:bg-accent/20 transition-all">
                     <motion.div 
                       animate={{ x: i % 2 === 0 ? 24 : 0 }}
                       className={cn(
                         "w-4 h-4 rounded-full transition-all",
-                        i % 2 === 0 ? "bg-sky-blue power-switch-glow" : "bg-slate-600"
+                        i % 2 === 0 ? "bg-accent power-switch-glow" : "bg-slate-600"
                       )}
                     />
                   </div>
@@ -318,9 +315,9 @@ export default function LandingPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="glass-card rounded-[80px] p-20 md:p-32 text-center space-y-12 relative overflow-hidden border-sky-blue/20"
+            className="glass-card rounded-[80px] p-20 md:p-32 text-center space-y-12 relative overflow-hidden border-accent/20"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-sky-blue/10 via-transparent to-indigo-600/10 -z-10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-accent-hover/10 -z-10" />
             <h2 className="text-6xl md:text-8xl font-display font-black text-white tracking-tighter leading-none">
               Ready to <span className="shiny-text">Ignite?</span>
             </h2>
@@ -330,7 +327,7 @@ export default function LandingPage() {
             </p>
             <Link 
               href="/dashboard"
-              className="inline-flex px-16 py-8 bg-white text-onyx rounded-3xl font-display font-black text-2xl hover:bg-sky-blue hover:text-white transition-all transform hover:scale-105 shadow-2xl shadow-white/10"
+              className="inline-flex px-16 py-8 bg-white text-black rounded-3xl font-display font-black text-2xl hover:bg-accent hover:text-white transition-all transform hover:scale-105 shadow-2xl shadow-white/10"
             >
               Get Started Now
             </Link>
@@ -343,7 +340,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-16">
           <div className="col-span-2 space-y-8">
             <div className="flex items-center gap-4">
-              <Zap className="w-10 h-10 text-sky-blue fill-sky-blue" />
+              <Zap className="w-10 h-10 text-accent fill-accent" />
               <span className="text-3xl font-display font-black tracking-tighter text-white">OneFlow</span>
             </div>
             <p className="text-slate-500 max-w-md text-lg leading-relaxed">
@@ -354,16 +351,16 @@ export default function LandingPage() {
           <div className="space-y-8">
             <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Resources</h4>
             <ul className="space-y-5 text-sm text-slate-500 font-bold uppercase tracking-widest">
-              <li><Link href="/blog" className="hover:text-sky-blue transition-colors">Growth Guides</Link></li>
-              <li><Link href="/contact" className="hover:text-sky-blue transition-colors">Support Hub</Link></li>
-              <li><Link href="/dashboard" className="hover:text-sky-blue transition-colors">Studio Access</Link></li>
+              <li><Link href="/blog" className="hover:text-accent transition-colors">Growth Guides</Link></li>
+              <li><Link href="/contact" className="hover:text-accent transition-colors">Support Hub</Link></li>
+              <li><Link href="/dashboard" className="hover:text-accent transition-colors">Studio Access</Link></li>
             </ul>
           </div>
           <div className="space-y-8">
             <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Legal</h4>
             <ul className="space-y-5 text-sm text-slate-500 font-bold uppercase tracking-widest">
-              <li><Link href="/privacy" className="hover:text-sky-blue transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-sky-blue transition-colors">Terms of Service</Link></li>
+              <li><Link href="/privacy" className="hover:text-accent transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-accent transition-colors">Terms of Service</Link></li>
               <li><Link href="/delete-account" className="hover:text-red-400 transition-colors">Data Deletion</Link></li>
             </ul>
           </div>
@@ -371,7 +368,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto pt-32 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-800">© 2026 OneFlow Studio • Global Social Engine</p>
           <div className="flex gap-8">
-            <Twitter className="w-6 h-6 text-slate-800 hover:text-sky-blue cursor-pointer transition-colors" />
+            <Twitter className="w-6 h-6 text-slate-800 hover:text-accent cursor-pointer transition-colors" />
             <Instagram className="w-6 h-6 text-slate-800 hover:text-pink-500 cursor-pointer transition-colors" />
             <Linkedin className="w-6 h-6 text-slate-800 hover:text-blue-600 cursor-pointer transition-colors" />
           </div>

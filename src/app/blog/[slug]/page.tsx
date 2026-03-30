@@ -1,8 +1,8 @@
 import Navbar from "@/components/Navbar";
-import { ArrowLeft, Calendar, User, Share2, Zap, Globe, Sparkles } from "lucide-react";
+import { ArrowLeft, Calendar, User, Share2, Zap } from "lucide-react";
 import Link from "next/link";
 import { Metadata } from "next";
-import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 // Simulated getPostBySlug() function
 const getPostBySlug = (slug: string) => {
@@ -114,7 +114,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <main className="max-w-4xl mx-auto pt-48 pb-32 px-6 space-y-16 relative z-10">
         <Link 
           href="/blog"
-          className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 hover:text-sky-blue transition-all group"
+          className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 hover:text-accent transition-all group"
         >
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" />
           Back to Stream
@@ -124,11 +124,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <header className="space-y-10">
             <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-slate-500">
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-sky-blue" />
+                <Calendar className="w-4 h-4 text-accent" />
                 {post.date}
               </div>
               <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-sky-blue" />
+                <User className="w-4 h-4 text-accent" />
                 {post.author}
               </div>
               <div className="px-4 py-1.5 rounded-full bg-white/10 border border-white/10 text-white">
@@ -138,11 +138,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <h1 className="text-6xl md:text-8xl font-display font-black text-white tracking-tighter leading-[0.9]">
               <span className="shiny-text">{post.title}</span>
             </h1>
-            <div className="aspect-video w-full rounded-[60px] overflow-hidden border border-white/5 relative shadow-2xl shadow-sky-blue/10">
-              <img 
+            <div className="aspect-video w-full rounded-[60px] overflow-hidden border border-white/5 relative shadow-2xl shadow-accent/10">
+              <Image 
                 src={post.image} 
                 alt={post.title} 
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-t from-onyx/60 to-transparent" />
             </div>
@@ -161,14 +163,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=https://oneflow.site/blog/${post.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-4 glass-card rounded-2xl hover:text-sky-blue transition-all border border-white/5 flex items-center justify-center"
+                  className="p-4 glass-card rounded-2xl hover:text-accent transition-all border border-white/5 flex items-center justify-center"
                 >
                   <Share2 className="w-5 h-5" />
                 </a>
               </div>
             </div>
             <div className="flex items-center gap-4 p-6 glass-card rounded-3xl border border-white/5">
-              <Zap className="w-6 h-6 text-sky-blue fill-sky-blue" />
+              <Zap className="w-6 h-6 text-accent fill-accent" />
               <p className="text-sm font-bold text-white uppercase tracking-widest">Powered by OneFlow Engine</p>
             </div>
           </footer>

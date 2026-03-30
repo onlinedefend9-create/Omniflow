@@ -3,13 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "motion/react";
+import Image from "next/image";
 import { 
   Send, 
   Video, 
-  Image as ImageIcon, 
   Zap, 
   CheckCircle2, 
-  XCircle, 
   Loader2,
   Twitter,
   Linkedin,
@@ -20,30 +19,25 @@ import {
   MessageSquare,
   Globe,
   Share2,
-  Pin,
-  Activity,
   Sparkles,
   Layout,
   Eye,
   Upload,
   Trash2,
-  Power,
-  Settings2,
-  BarChart3,
-  RefreshCcw
+  Power
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
 
 const platforms = [
-  { id: "tiktok", providerId: "tiktok", name: "TikTok", icon: Music2, color: "text-pink-500", glow: "shadow-pink-500/20" },
-  { id: "youtube", providerId: "google", name: "YouTube", icon: Youtube, color: "text-red-500", glow: "shadow-red-500/20" },
-  { id: "instagram", providerId: "facebook", name: "Instagram", icon: Instagram, color: "text-purple-500", glow: "shadow-purple-500/20" },
-  { id: "facebook", providerId: "facebook", name: "Facebook", icon: Facebook, color: "text-blue-600", glow: "shadow-blue-600/20" },
-  { id: "threads", providerId: "facebook", name: "Threads", icon: MessageSquare, color: "text-white", glow: "shadow-white/10" },
-  { id: "x", providerId: "twitter", name: "X", icon: Twitter, color: "text-slate-200", glow: "shadow-slate-200/10" },
-  { id: "linkedin", providerId: "linkedin", name: "LinkedIn", icon: Linkedin, color: "text-blue-700", glow: "shadow-blue-700/20" },
-  { id: "telegram", providerId: "telegram", name: "Telegram", icon: Send, color: "text-sky-400", glow: "shadow-sky-400/20" },
+  { id: "tiktok", providerId: "tiktok", name: "TikTok", icon: Music2 },
+  { id: "youtube", providerId: "google", name: "YouTube", icon: Youtube },
+  { id: "instagram", providerId: "facebook", name: "Instagram", icon: Instagram },
+  { id: "facebook", providerId: "facebook", name: "Facebook", icon: Facebook },
+  { id: "threads", providerId: "facebook", name: "Threads", icon: MessageSquare },
+  { id: "x", providerId: "twitter", name: "X", icon: Twitter },
+  { id: "linkedin", providerId: "linkedin", name: "LinkedIn", icon: Linkedin },
+  { id: "telegram", providerId: "telegram", name: "Telegram", icon: Send },
 ];
 
 export default function Dashboard() {
@@ -73,14 +67,14 @@ export default function Dashboard() {
 
   if (status === "loading" || !mounted) {
     return (
-      <div className="min-h-screen bg-onyx flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <motion.div 
           animate={{ rotate: 360, scale: [1, 1.2, 1] }}
           transition={{ rotate: { repeat: Infinity, duration: 2, ease: "linear" }, scale: { repeat: Infinity, duration: 1.5, ease: "easeInOut" } }}
           className="relative"
         >
-          <div className="absolute inset-0 bg-sky-blue blur-2xl opacity-50" />
-          <Zap className="relative w-16 h-16 text-sky-blue fill-sky-blue/20" />
+          <div className="absolute inset-0 bg-accent blur-2xl opacity-50" />
+          <Zap className="relative w-16 h-16 text-accent fill-accent/20" />
         </motion.div>
       </div>
     );
@@ -118,7 +112,7 @@ export default function Dashboard() {
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
             <h1 className="text-4xl font-display font-black tracking-tighter text-white leading-none">
-              Content <span className="text-sky-blue text-gradient">Studio</span>
+              Content <span className="text-accent text-gradient">Studio</span>
             </h1>
             <p className="text-slate-500 font-bold uppercase tracking-[0.3em] text-[10px] mt-4">
               Create once. Impact everywhere.
@@ -140,7 +134,7 @@ export default function Dashboard() {
                 role="tab"
                 aria-selected={activeTab === "editor"}
                 aria-label="Open content editor"
-                className={cn("flex items-center gap-3 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500", activeTab === "editor" ? "bg-sky-blue text-onyx shadow-[0_0_20px_rgba(56,189,248,0.3)]" : "text-slate-500 hover:text-white hover:bg-white/5")}
+                className={cn("flex items-center gap-3 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500", activeTab === "editor" ? "bg-accent text-black shadow-[0_0_20px_rgba(255,0,127,0.3)]" : "text-slate-500 hover:text-white hover:bg-white/5")}
               >
                 <Layout className="w-4 h-4" /> Editor
               </button>
@@ -149,7 +143,7 @@ export default function Dashboard() {
                 role="tab"
                 aria-selected={activeTab === "preview"}
                 aria-label="Preview content"
-                className={cn("flex items-center gap-3 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500", activeTab === "preview" ? "bg-sky-blue text-onyx shadow-[0_0_20px_rgba(56,189,248,0.3)]" : "text-slate-500 hover:text-white hover:bg-white/5")}
+                className={cn("flex items-center gap-3 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500", activeTab === "preview" ? "bg-accent text-black shadow-[0_0_20px_rgba(255,0,127,0.3)]" : "text-slate-500 hover:text-white hover:bg-white/5")}
               >
                 <Eye className="w-4 h-4" /> Preview
               </button>
@@ -161,8 +155,8 @@ export default function Dashboard() {
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-sky-blue/10 flex items-center justify-center">
-                          <MessageSquare className="w-4 h-4 text-sky-blue" />
+                        <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                          <MessageSquare className="w-4 h-4 text-accent" />
                         </div>
                         <label htmlFor="content-editor" className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Viral Stream</label>
                       </div>
@@ -175,7 +169,7 @@ export default function Dashboard() {
                       value={content} 
                       onChange={(e) => setContent(e.target.value)} 
                       placeholder="What's the global impact today?" 
-                      className="w-full h-72 bg-transparent border-none focus:ring-0 text-3xl font-display font-bold text-white placeholder:text-slate-800 resize-none leading-tight selection:bg-sky-blue/30" 
+                      className="w-full h-72 bg-transparent border-none focus:ring-0 text-3xl font-display font-bold text-white placeholder:text-slate-800 resize-none leading-tight selection:bg-accent/30" 
                     />
                   </div>
 
@@ -193,10 +187,10 @@ export default function Dashboard() {
                       }}
                       onClick={() => fileInputRef.current?.click()} 
                       aria-label="Upload media"
-                      className="group flex-1 flex items-center gap-6 px-10 py-8 glass-card glass-card-hover rounded-[32px] cursor-pointer border border-white/5 border-dashed hover:border-sky-blue/40 transition-all duration-500"
+                      className="group flex-1 flex items-center gap-6 px-10 py-8 glass-card glass-card-hover rounded-[32px] cursor-pointer border border-white/5 border-dashed hover:border-accent/40 transition-all duration-500"
                     >
-                      <div className="w-14 h-14 rounded-2xl bg-sky-blue/10 flex items-center justify-center group-hover:bg-sky-blue/20 group-hover:scale-110 transition-all duration-500 shadow-inner">
-                        <Upload className="w-6 h-6 text-sky-blue" />
+                      <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 group-hover:scale-110 transition-all duration-500 shadow-inner">
+                        <Upload className="w-6 h-6 text-accent" />
                       </div>
                       <div className="text-left">
                         <span className="block text-[10px] font-black uppercase tracking-[0.3em] text-white mb-1">Drop Media Here</span>
@@ -213,19 +207,19 @@ export default function Dashboard() {
                     </div>
                     
                     {media && (
-                      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-6 px-8 py-6 bg-gradient-to-r from-sky-blue/10 to-indigo-500/10 border border-sky-blue/20 rounded-[32px] shadow-2xl">
-                        <div className="w-16 h-16 rounded-2xl bg-sky-blue/20 overflow-hidden border border-white/10 shadow-inner">
+                      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-6 px-8 py-6 bg-gradient-to-r from-accent/10 to-accent/10 border border-accent/20 rounded-[32px] shadow-2xl">
+                        <div className="w-16 h-16 rounded-2xl bg-accent/20 overflow-hidden border border-white/10 shadow-inner">
                           {media.type.startsWith("image/") ? (
-                            <img src={mediaPreview!} alt="Preview" className="w-full h-full object-cover" />
+                            <Image src={mediaPreview!} alt="Preview" fill className="object-cover" unoptimized />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-onyx">
-                              <Video className="w-6 h-6 text-sky-blue" />
+                            <div className="w-full h-full flex items-center justify-center bg-black">
+                              <Video className="w-6 h-6 text-accent" />
                             </div>
                           )}
                         </div>
                         <div className="flex flex-col">
                           <span className="text-[10px] font-black text-white uppercase tracking-widest truncate max-w-[150px]">{media.name}</span>
-                          <span className="text-[8px] font-bold text-sky-blue/60 uppercase tracking-widest">Optimized for Stream</span>
+                          <span className="text-[8px] font-bold text-accent/60 uppercase tracking-widest">Optimized for Stream</span>
                         </div>
                         <button 
                           onClick={(e) => {
@@ -246,9 +240,9 @@ export default function Dashboard() {
                   {content ? (
                     <div className="max-w-lg w-full space-y-8 text-left">
                       <div className="flex items-center gap-4 p-4 bg-white/5 rounded-3xl border border-white/5">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-blue to-indigo-600 p-0.5">
-                          <div className="w-full h-full rounded-[14px] bg-onyx flex items-center justify-center overflow-hidden">
-                            {session?.user?.image ? <img src={session.user.image} alt="" className="w-full h-full object-cover" /> : <Zap className="w-6 h-6 text-sky-blue" />}
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-accent to-accent-hover p-0.5">
+                          <div className="w-full h-full rounded-[14px] bg-black flex items-center justify-center overflow-hidden">
+                            {session?.user?.image ? <Image src={session.user.image} alt="" fill className="object-cover" unoptimized /> : <Zap className="w-6 h-6 text-accent" />}
                           </div>
                         </div>
                         <div>
@@ -260,12 +254,12 @@ export default function Dashboard() {
                       {mediaPreview && (
                         <div className="aspect-video w-full bg-white/5 rounded-[32px] border border-white/10 flex items-center justify-center overflow-hidden relative group">
                           {media?.type.startsWith("image/") ? (
-                            <img src={mediaPreview} alt="Preview" className="w-full h-full object-cover" />
+                            <Image src={mediaPreview} alt="Preview" fill className="object-cover" unoptimized />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-onyx">
-                              <Video className="w-12 h-12 text-sky-blue/20" />
+                            <div className="w-full h-full flex items-center justify-center bg-black">
+                              <Video className="w-12 h-12 text-accent/20" />
                               <div className="absolute inset-0 flex items-center justify-center">
-                                <Sparkles className="w-12 h-12 text-sky-blue animate-pulse" />
+                                <Sparkles className="w-12 h-12 text-accent animate-pulse" />
                               </div>
                             </div>
                           )}
@@ -290,7 +284,7 @@ export default function Dashboard() {
               onClick={handlePublish} 
               disabled={isPublishing || !content.trim() || selectedPlatforms.length === 0} 
               aria-label="Publish to selected networks"
-              className="w-full py-8 bg-gradient-to-r from-sky-blue via-indigo-500 to-purple-600 text-white rounded-[40px] font-display font-black text-2xl flex items-center justify-center gap-5 hover:shadow-[0_20px_50px_rgba(56,189,248,0.3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-500 border border-white/20"
+              className="w-full py-8 bg-gradient-to-r from-accent via-accent to-accent text-white rounded-[40px] font-display font-black text-2xl flex items-center justify-center gap-5 hover:shadow-[0_20px_50px_rgba(255,0,127,0.3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-500 border border-white/20"
             >
               {isPublishing ? <><Loader2 className="w-8 h-8 animate-spin" /> Propagating Stream...</> : <><Share2 className="w-8 h-8" /> Ignite {selectedPlatforms.length} Networks</>}
             </motion.button>
@@ -300,17 +294,17 @@ export default function Dashboard() {
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="glass-card rounded-[40px] p-10 space-y-10 border border-white/5 relative overflow-hidden">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                    <Globe className="w-4 h-4 text-purple-500" />
+                  <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                    <Globe className="w-4 h-4 text-accent" />
                   </div>
                   <h2 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Connectors</h2>
                 </div>
-                <button onClick={() => setSelectedPlatforms(platforms.map(p => p.id))} className="text-[10px] font-black text-sky-blue hover:text-white transition-colors uppercase tracking-widest">Select All</button>
+                <button onClick={() => setSelectedPlatforms(platforms.map(p => p.id))} className="text-[10px] font-black text-accent hover:text-white transition-colors uppercase tracking-widest">Select All</button>
               </div>
               
               <div className="grid grid-cols-2 gap-5">
                 {platforms.map((platform, idx) => {
-                  const account = (session as any)?.accounts?.[platform.id];
+                  const account = (session as { accounts?: Record<string, unknown> })?.accounts?.[platform.id];
                   const isConnected = !!account;
                   const isSelected = selectedPlatforms.includes(platform.id);
                   return (
@@ -322,31 +316,31 @@ export default function Dashboard() {
                       className={cn(
                         "relative flex flex-col items-center justify-center gap-6 p-8 rounded-[40px] border transition-all duration-700 group overflow-hidden",
                         isConnected 
-                          ? "bg-gradient-to-b from-sky-blue/10 to-indigo-500/5 border-sky-blue/30 shadow-[0_0_30px_rgba(56,189,248,0.1)]" 
-                          : "bg-white/2 border-white/5 hover:border-white/10"
+                          ? "bg-black border-[#FF007F] shadow-[0_0_15px_rgba(255,0,127,0.3)]" 
+                          : "bg-black border-[rgba(255,0,127,0.3)] hover:border-[#FF007F]"
                       )}
                     >
                       <div className={cn(
                         "w-20 h-20 rounded-[28px] flex items-center justify-center transition-all duration-700 shadow-inner relative",
-                        isConnected ? "bg-white/10 scale-110" : "bg-white/5 group-hover:scale-110"
+                        isConnected ? "bg-[#FF007F]/10 scale-110" : "bg-white/5 group-hover:scale-110"
                       )}>
                         {isConnected && (
-                          <div className="absolute inset-0 bg-sky-blue/20 blur-2xl animate-pulse rounded-full" />
+                          <div className="absolute inset-0 bg-[#FF007F]/20 blur-2xl animate-pulse rounded-full" />
                         )}
-                        <platform.icon className={cn("w-10 h-10 relative z-10", platform.color)} />
+                        <platform.icon className={cn("w-10 h-10 relative z-10 transition-colors duration-500", isConnected ? "text-[#FF007F]" : "text-white group-hover:text-[#FF007F]")} />
                       </div>
                       
                       <div className="text-center space-y-2">
                         <span className={cn(
                           "text-[12px] font-black uppercase tracking-[0.3em] transition-colors duration-500",
-                          isConnected ? "text-white" : "text-slate-500 group-hover:text-slate-300"
+                          isConnected ? "text-white" : "text-slate-500 group-hover:text-white"
                         )}>
                           {platform.name}
                         </span>
                         {isConnected && (
                           <div className="flex items-center justify-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-sky-blue animate-pulse" />
-                            <span className="text-[8px] font-black text-sky-blue uppercase tracking-widest">Active Stream</span>
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#FF007F] animate-pulse" />
+                            <span className="text-[8px] font-black text-[#FF007F] uppercase tracking-widest">Active Stream</span>
                           </div>
                         )}
                       </div>
@@ -355,7 +349,7 @@ export default function Dashboard() {
                       {!isConnected ? (
                         <button 
                           onClick={() => signIn(platform.providerId)}
-                          className="w-full py-4 bg-white/5 hover:bg-white text-[10px] font-black text-white hover:text-onyx uppercase tracking-widest rounded-2xl border border-white/10 transition-all duration-500"
+                          className="w-full py-4 bg-black text-[10px] font-black text-white hover:text-white uppercase tracking-widest rounded-2xl border border-[#FF007F] hover:bg-[#FF007F] transition-all duration-500 shadow-[0_0_10px_rgba(255,0,127,0.1)] hover:shadow-[0_0_20px_rgba(255,0,127,0.4)]"
                         >
                           Connect
                         </button>
@@ -365,22 +359,22 @@ export default function Dashboard() {
                             onClick={() => togglePlatform(platform.id)}
                             className={cn(
                               "w-full h-10 rounded-full relative p-1 cursor-pointer transition-all duration-500",
-                              isSelected ? "bg-sky-blue/20 border border-sky-blue/30" : "bg-slate-900 border border-white/5"
+                              isSelected ? "bg-[#FF007F]/20 border border-[#FF007F]/50" : "bg-slate-900 border border-white/5"
                             )}
                           >
                             <motion.div 
                               animate={{ x: isSelected ? 44 : 0 }}
                               className={cn(
                                 "w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500",
-                                isSelected ? "bg-sky-blue power-switch-glow shadow-[0_0_20px_rgba(56,189,248,0.8)]" : "bg-slate-700"
+                                isSelected ? "bg-[#FF007F] shadow-[0_0_15px_rgba(255,0,127,0.6)]" : "bg-slate-700"
                               )}
                             >
-                              <Power className={cn("w-4 h-4", isSelected ? "text-onyx" : "text-slate-500")} />
+                              <Power className={cn("w-4 h-4", isSelected ? "text-white" : "text-slate-500")} />
                             </motion.div>
                           </div>
                           <button 
                             onClick={() => signOut()}
-                            className="text-[8px] font-black text-slate-600 hover:text-red-400 uppercase tracking-[0.2em] transition-colors"
+                            className="text-[8px] font-black text-slate-600 hover:text-[#FF007F] uppercase tracking-[0.2em] transition-colors"
                           >
                             Terminate Connection
                           </button>
@@ -388,7 +382,7 @@ export default function Dashboard() {
                       )}
 
                       {isSelected && (
-                        <motion.div layoutId="check" className="absolute top-4 right-4 bg-gradient-to-br from-sky-blue to-indigo-600 rounded-full p-2 shadow-2xl border border-white/20">
+                        <motion.div layoutId="check" className="absolute top-4 right-4 bg-[#FF007F] rounded-full p-2 shadow-[0_0_10px_rgba(255,0,127,0.5)] border border-white/20">
                           <CheckCircle2 className="w-4 h-4 text-white" />
                         </motion.div>
                       )}
@@ -398,14 +392,14 @@ export default function Dashboard() {
               </div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.8 }} className="p-8 glass-card rounded-[32px] border-indigo-500/10 relative group overflow-hidden">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.8 }} className="p-8 glass-card rounded-[32px] border-accent/10 relative group overflow-hidden">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-indigo-400" />
+                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-accent" />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-300">Global Engine</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent">Global Engine</span>
               </div>
-              <p className="text-[12px] text-indigo-300/60 leading-relaxed italic font-medium">"OneFlow orchestrates official OAuth2 streams. Your security is paramount."</p>
+              <p className="text-[12px] text-accent/60 leading-relaxed italic font-medium">&quot;OneFlow orchestrates official OAuth2 streams. Your security is paramount.&quot;</p>
             </motion.div>
           </section>
         </main>

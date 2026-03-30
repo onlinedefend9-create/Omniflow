@@ -2,33 +2,33 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
 // Distribution functions (placeholders for real API calls)
-async function publishToYouTube(content: string, media: any, token: string) {
-  console.log("Publishing to YouTube Shorts:", content);
+async function publishToYouTube(content: string, media: unknown, token: string) {
+  console.log("Publishing to YouTube Shorts:", content, media, token);
   return { success: true, platform: "youtube" };
 }
 
-async function publishToTikTok(content: string, media: any, token: string) {
-  console.log("Publishing to TikTok:", content);
+async function publishToTikTok(content: string, media: unknown, token: string) {
+  console.log("Publishing to TikTok:", content, media, token);
   return { success: true, platform: "tiktok" };
 }
 
-async function publishToMeta(content: string, media: any, token: string) {
-  console.log("Publishing to Meta (Facebook/Instagram):", content);
+async function publishToMeta(content: string, media: unknown, token: string) {
+  console.log("Publishing to Meta (Facebook/Instagram):", content, media, token);
   return { success: true, platform: "meta" };
 }
 
-async function publishToX(content: string, media: any, token: string) {
-  console.log("Publishing to X (Twitter):", content);
+async function publishToX(content: string, media: unknown, token: string) {
+  console.log("Publishing to X (Twitter):", content, media, token);
   return { success: true, platform: "x" };
 }
 
-async function publishToLinkedIn(content: string, media: any, token: string) {
-  console.log("Publishing to LinkedIn:", content);
+async function publishToLinkedIn(content: string, media: unknown, token: string) {
+  console.log("Publishing to LinkedIn:", content, media, token);
   return { success: true, platform: "linkedin" };
 }
 
-async function publishToTelegram(content: string, media: any, token: string) {
-  console.log("Publishing to Telegram:", content);
+async function publishToTelegram(content: string, media: unknown, token: string) {
+  console.log("Publishing to Telegram:", content, media, token);
   return { success: true, platform: "telegram" };
 }
 
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { content, platforms, media } = body;
-    const accounts = (session as any).accounts || {};
+    const accounts = (session as { accounts?: Record<string, { accessToken?: string }> }).accounts || {};
 
     console.log(`Publish requested on: ${platforms.join(", ")}`);
     console.log(`Content: ${content}`);

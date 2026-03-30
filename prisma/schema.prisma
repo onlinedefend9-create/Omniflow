@@ -9,6 +9,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -17,6 +18,8 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  autoLike      Boolean   @default(false)
+  autoReply     Boolean   @default(false)
   accounts      Account[]
   sessions      Session[]
 

@@ -3,8 +3,8 @@
 import { motion, Variants } from "motion/react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
-import { ArrowRight, Calendar, User, Sparkles, Zap, Globe } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ArrowRight, Calendar, User, Sparkles } from "lucide-react";
+import Image from "next/image";
 
 const revealVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -63,8 +63,8 @@ export default function BlogPage() {
           className="text-center space-y-8"
         >
           <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass-card border-white/10 backdrop-blur-xl">
-            <Sparkles className="w-4 h-4 text-sky-blue" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-sky-blue">Global Growth Guides</span>
+            <Sparkles className="w-4 h-4 text-accent" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent">Global Growth Guides</span>
           </div>
           <h1 className="text-6xl md:text-8xl font-display font-black text-white tracking-tighter leading-none">
             The <span className="shiny-text">Stream.</span>
@@ -83,13 +83,15 @@ export default function BlogPage() {
               viewport={{ once: true }}
               variants={revealVariants}
               transition={{ delay: i * 0.1 }}
-              className="glass-card rounded-[48px] overflow-hidden border border-white/5 flex flex-col group hover:border-sky-blue/20 transition-all duration-700"
+              className="glass-card rounded-[48px] overflow-hidden border border-white/5 flex flex-col group hover:border-accent/20 transition-all duration-700"
             >
               <div className="aspect-video w-full overflow-hidden relative">
-                <img 
+                <Image 
                   src={post.image} 
                   alt={post.title} 
-                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                  fill
+                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                  unoptimized
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-onyx/90 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
                 <div className="absolute top-6 left-6 px-4 py-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/10 text-[8px] font-black uppercase tracking-widest text-white">
@@ -99,15 +101,15 @@ export default function BlogPage() {
               <div className="p-10 space-y-8 flex-grow flex flex-col">
                 <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-slate-500">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-3.5 h-3.5 text-sky-blue" />
+                    <Calendar className="w-3.5 h-3.5 text-accent" />
                     {post.date}
                   </div>
                   <div className="flex items-center gap-2">
-                    <User className="w-3.5 h-3.5 text-sky-blue" />
+                    <User className="w-3.5 h-3.5 text-accent" />
                     {post.author}
                   </div>
                 </div>
-                <h2 className="text-3xl font-display font-black text-white group-hover:text-sky-blue transition-colors leading-tight">
+                <h2 className="text-3xl font-display font-black text-white group-hover:text-accent transition-colors leading-tight">
                   {post.title}
                 </h2>
                 <p className="text-slate-400 text-base leading-relaxed flex-grow font-medium">
@@ -115,7 +117,7 @@ export default function BlogPage() {
                 </p>
                 <Link 
                   href={`/blog/${post.slug}`}
-                  className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-sky-blue hover:text-white transition-all group/link"
+                  className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-accent hover:text-white transition-all group/link"
                 >
                   Read Full Guide
                   <ArrowRight className="w-5 h-5 transition-transform group-hover/link:translate-x-2" />

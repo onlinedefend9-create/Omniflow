@@ -26,8 +26,8 @@ export default function TermsPage() {
           className="text-center space-y-8"
         >
           <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass-card border-white/10 backdrop-blur-xl">
-            <FileText className="w-4 h-4 text-sky-blue" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-sky-blue">Global Service Agreement</span>
+            <FileText className="w-4 h-4 text-accent" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent">Global Service Agreement</span>
           </div>
           <h1 className="text-6xl md:text-8xl font-display font-black text-white tracking-tighter leading-none">
             Terms of <span className="shiny-text">Service.</span>
@@ -43,12 +43,12 @@ export default function TermsPage() {
           variants={revealVariants}
           className="glass-card p-12 md:p-20 rounded-[60px] border border-white/5 space-y-16 relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-sky-blue/5 via-transparent to-indigo-600/5 -z-10" />
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-accent-hover/5 -z-10" />
           
           <section className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-sky-blue/10 flex items-center justify-center">
-                <CheckCircle2 className="w-5 h-5 text-sky-blue" />
+              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+                <CheckCircle2 className="w-5 h-5 text-accent" />
               </div>
               <h2 className="text-2xl font-display font-black text-white uppercase tracking-widest">1. Acceptance of Terms</h2>
             </div>
@@ -60,8 +60,8 @@ export default function TermsPage() {
 
           <section className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center">
-                <Zap className="w-5 h-5 text-indigo-400" />
+              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+                <Zap className="w-5 h-5 text-accent" />
               </div>
               <h2 className="text-2xl font-display font-black text-white uppercase tracking-widest">2. Service Usage</h2>
             </div>
@@ -73,7 +73,7 @@ export default function TermsPage() {
 
           <section className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
                 <ShieldAlert className="w-5 h-5 text-purple-400" />
               </div>
               <h2 className="text-2xl font-display font-black text-white uppercase tracking-widest">3. Accounts & Security</h2>
