@@ -93,9 +93,12 @@ export default function LandingPage() {
               Open Studio
               <ArrowRight className="w-6 h-6" />
             </Link>
-            <button className="px-12 py-6 glass-card glass-card-hover rounded-2xl font-display font-black text-xl text-white border-white/10">
+            <a 
+              href="#features"
+              className="px-12 py-6 glass-card glass-card-hover rounded-2xl font-display font-black text-xl text-white border-white/10 flex items-center justify-center"
+            >
               Watch Demo
-            </button>
+            </a>
           </motion.div>
 
           {/* Floating Platform Icons */}

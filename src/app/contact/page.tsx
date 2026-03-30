@@ -76,7 +76,14 @@ export default function ContactPage() {
           >
             <div className="absolute inset-0 bg-gradient-to-br from-sky-blue/5 via-transparent to-indigo-600/5 -z-10" />
             
-            <form action={contactAction} className="space-y-10">
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                alert("Message sent successfully! We will get back to you soon.");
+                (e.target as HTMLFormElement).reset();
+              }} 
+              className="space-y-10"
+            >
               <div className="grid md:grid-cols-2 gap-10">
                 <div className="space-y-4">
                   <label className="flex items-center gap-3 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">

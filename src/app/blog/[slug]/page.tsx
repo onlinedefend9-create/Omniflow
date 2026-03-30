@@ -157,9 +157,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <div className="flex items-center gap-6">
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500">Share Impact:</span>
               <div className="flex gap-4">
-                <button className="p-4 glass-card rounded-2xl hover:text-sky-blue transition-all border border-white/5">
+                <a 
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=https://oneflow.site/blog/${post.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-4 glass-card rounded-2xl hover:text-sky-blue transition-all border border-white/5 flex items-center justify-center"
+                >
                   <Share2 className="w-5 h-5" />
-                </button>
+                </a>
               </div>
             </div>
             <div className="flex items-center gap-4 p-6 glass-card rounded-3xl border border-white/5">

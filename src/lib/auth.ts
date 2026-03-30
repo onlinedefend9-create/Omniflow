@@ -48,10 +48,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.TIKTOK_SECRET,
     },
   ],
-  pages: {
-    signIn: "/auth/signin",
-  },
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "fallback_secret_for_development_only_12345",
   trustHost: true,
   callbacks: {
     async jwt({ token, account, user }) {
