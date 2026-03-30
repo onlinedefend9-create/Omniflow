@@ -69,8 +69,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="dark font-sans bg-onyx text-slate-200 antialiased overflow-x-hidden relative">
-        <div className="atmospheric-fog" />
+      <body className="dark font-sans bg-background text-foreground antialiased overflow-x-hidden relative">
         <Providers>{children}</Providers>
       </body>
     </html>

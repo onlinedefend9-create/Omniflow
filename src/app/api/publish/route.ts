@@ -32,16 +32,6 @@ async function publishToTelegram(content: string, media: any, token: string) {
   return { success: true, platform: "telegram" };
 }
 
-async function publishToPinterest(content: string, media: any, token: string) {
-  console.log("Publishing to Pinterest:", content);
-  return { success: true, platform: "pinterest" };
-}
-
-async function publishToReddit(content: string, media: any, token: string) {
-  console.log("Publishing to Reddit:", content);
-  return { success: true, platform: "reddit" };
-}
-
 export async function POST(req: Request) {
   const session = await auth();
   
@@ -78,8 +68,6 @@ export async function POST(req: Request) {
             case "x": return await publishToX(content, media, token);
             case "linkedin": return await publishToLinkedIn(content, media, token);
             case "telegram": return await publishToTelegram(content, media, token);
-            case "pinterest": return await publishToPinterest(content, media, token);
-            case "reddit": return await publishToReddit(content, media, token);
             default: return { success: false, platform, error: "Unsupported Platform" };
           }
         } catch (error) {
