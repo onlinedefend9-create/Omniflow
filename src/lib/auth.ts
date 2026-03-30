@@ -65,6 +65,7 @@ if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET) {
         client_key: process.env.TIKTOK_CLIENT_KEY,
         scope: "user.info.basic,video.upload,video.publish",
         response_type: "code",
+        redirect_uri: "https://oneflow.site/api/auth/callback/tiktok",
       },
     },
     token: "https://open.tiktokapis.com/v2/oauth/token/",
@@ -98,6 +99,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return false;
       }
       return true;
+    },
+    async redirect({ baseUrl }) {
+      // Force redirect to dashboard on success
+      return `${baseUrl}/dashboard?login=success`;
     },
     async jwt({ token, account, user }) {
       if (account) {
