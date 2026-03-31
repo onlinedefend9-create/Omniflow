@@ -28,6 +28,8 @@ import {
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
 import { ConnectionCard } from "@/components/ConnectionCard";
+import { AdPlaceholder } from "@/components/AdPlaceholder";
+import { SyncModal } from "@/components/SyncModal";
 
 const platforms = [
   { id: "tiktok", providerId: "tiktok", name: "TikTok", icon: Music2 },
@@ -43,6 +45,8 @@ const platforms = [
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const [showToast, setShowToast] = useState(false);
+  const [isDemo, setIsDemo] = useState(false);
+  const [showSyncModal, setShowSyncModal] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -130,9 +134,11 @@ export default function Dashboard() {
           </motion.div>
         )}
       </AnimatePresence>
+      <SyncModal isOpen={showSyncModal} onClose={() => setShowSyncModal(false)} />
       <Navbar />
       
       <div className="max-w-7xl mx-auto space-y-12">
+        <AdPlaceholder className="h-24 w-full" />
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
             <h1 className="text-4xl font-display font-black tracking-tighter text-white leading-none">
@@ -142,7 +148,25 @@ export default function Dashboard() {
               Create once. Impact everywhere.
             </p>
           </motion.div>
+          <button 
+            onClick={() => setIsDemo(!isDemo)}
+            className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors border border-white/10"
+          >
+            {isDemo ? "Quitter la démo" : "Explorer la démo (Mode Artiste)"}
+          </button>
         </header>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl">
+            <h4 className="text-slate-400 text-sm">Vues</h4>
+            <p className="text-3xl font-bold text-white">{isDemo ? "1.2M" : "0"}</p>
+          </div>
+          <AdPlaceholder className="h-full w-full min-h-[100px]" />
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl">
+            <h4 className="text-slate-400 text-sm">Likes</h4>
+            <p className="text-3xl font-bold text-white">{isDemo ? "450K" : "0"}</p>
+          </div>
+        </div>
 
         <main className="grid lg:grid-cols-12 gap-8 items-start">
           <section className="lg:col-span-8 space-y-8">
@@ -309,6 +333,7 @@ export default function Dashboard() {
           </section>
 
           <section className="lg:col-span-4 space-y-8">
+            <AdPlaceholder className="h-full w-full min-h-[400px]" />
             <div className="grid grid-cols-2 gap-5">
               {platforms.map((platform) => {
                 const account = (session as { accounts?: Record<string, unknown> })?.accounts?.[platform.id];
