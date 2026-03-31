@@ -100,9 +100,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return true;
     },
-    async redirect({ baseUrl }) {
+    async redirect() {
       // Force redirect to dashboard on success
-      return `${baseUrl}/dashboard?login=success`;
+      return `https://oneflow.site/dashboard?login=success`;
     },
     async jwt({ token, account, user }) {
       if (account) {
