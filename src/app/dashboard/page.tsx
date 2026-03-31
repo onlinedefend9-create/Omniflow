@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Loader2,
@@ -57,6 +57,16 @@ export default function Dashboard() {
     if (status === "unauthenticated") {
       setIsDemo(true);
     }
+
+    // Handle 'connected' query param
+    const urlParams = new URLSearchParams(window.location.search);
+    const connected = urlParams.get("connected");
+    if (connected) {
+      // Show success toast or modal
+      setShowSyncModal(true);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, [status]);
 
   useEffect(() => {
@@ -103,8 +113,8 @@ export default function Dashboard() {
         setShowTelegramModal(true);
         return;
       }
-      // Standardized login route as requested
-      window.location.href = `/api/auth/${providerId}/login`;
+      // Standardized login via NextAuth
+      signIn(providerId, { callbackUrl: `/dashboard?connected=${providerId}` });
       return;
     }
 

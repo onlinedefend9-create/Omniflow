@@ -5,20 +5,20 @@ import { motion } from "motion/react"
 import { Card } from "./ui/Card"
 import { Button } from "./ui/Button"
 import { Youtube, Facebook, Music, Twitter, Linkedin } from "lucide-react"
+
 import { signIn } from "next-auth/react"
 
 const providers = [
   { id: "google", name: "Google", icon: Youtube },
   { id: "facebook", name: "Meta", icon: Facebook },
   { id: "tiktok", name: "TikTok", icon: Music },
-  { id: "twitter", name: "X (Twitter)", icon: Twitter },
+  { id: "twitter", name: "twitter", icon: Twitter }, // NextAuth uses 'twitter' for X
   { id: "linkedin", name: "LinkedIn", icon: Linkedin },
 ]
 
 export function Login() {
-  const handleLogin = async (providerId: string) => {
-    // Fix: callbackUrl should be the destination after login, not the callback endpoint
-    await signIn(providerId, { callbackUrl: '/dashboard' })
+  const handleLogin = (providerId: string) => {
+    signIn(providerId, { callbackUrl: "/dashboard" });
   }
 
   return (

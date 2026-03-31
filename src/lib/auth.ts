@@ -1,40 +1,38 @@
-import NextAuth, { type DefaultSession, type Session } from "next-auth";
-import { type JWT } from "next-auth/jwt";
-import TikTokProvider from "next-auth/providers/tiktok";
+import NextAuth, { type DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import TwitterProvider from "next-auth/providers/twitter";
 import LinkedInProvider from "next-auth/providers/linkedin";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prisma } from "@/lib/prisma";
 
 declare module "next-auth" {
   interface Session {
     user: {
       id: string;
     } & DefaultSession["user"];
-    accounts: Record<string, unknown>;
+    accessToken?: string;
+    provider?: string;
   }
 }
 
-// Configuration NextAuth avec Fallback et Cookies Sécurisés
+declare module "next-auth/jwt" {
+  interface JWT {
+    accessToken?: string;
+    refreshToken?: string;
+    provider?: string;
+  }
+}
+
 export const authOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
-    TikTokProvider({
-      clientId: process.env.TIKTOK_CLIENT_KEY!,
-      clientSecret: process.env.TIKTOK_CLIENT_SECRET!,
-      authorization: { 
-        params: { 
-          scope: "user.info.basic,video.list,video.upload", 
-          prompt: "login",
-          redirect_uri: "https://www.oneflow.site/api/auth/callback/tiktok"
-        } 
-      },
-    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: "openid email profile https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtube.readonly",
+          scope: "openid email profile https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly",
           prompt: "consent",
           access_type: "offline",
           response_type: "code",
@@ -50,6 +48,15 @@ export const authOptions = {
         },
       },
     }),
+    LinkedInProvider({
+      clientId: process.env.LINKEDIN_CLIENT_ID!,
+      clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: "openid profile email w_member_social",
+        },
+      },
+    }),
     TwitterProvider({
       clientId: process.env.TWITTER_CLIENT_ID!,
       clientSecret: process.env.TWITTER_CLIENT_SECRET!,
@@ -60,30 +67,54 @@ export const authOptions = {
         },
       },
     }),
-    LinkedInProvider({
-      clientId: process.env.LINKEDIN_CLIENT_ID!,
-      clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
+    {
+      id: "tiktok",
+      name: "TikTok",
+      type: "oauth",
       authorization: {
+        url: "https://www.tiktok.com/v2/auth/authorize/",
         params: {
-          scope: "openid profile email w_member_social",
+          client_key: process.env.TIKTOK_CLIENT_ID!,
+          scope: "user.info.basic,video.list,video.upload",
+          response_type: "code",
+          redirect_uri: "https://www.oneflow.site/api/auth/callback/tiktok",
         },
       },
-    }),
-  ],
-  cookies: {
-    sessionToken: {
-      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
-      options: { 
-        httpOnly: true, 
-        sameSite: "lax", 
-        path: "/", 
-        secure: process.env.NODE_ENV === "production" 
+      token: "https://open.tiktokapis.com/v2/oauth/token/",
+      userinfo: "https://open.tiktokapis.com/v2/user/info/",
+      clientId: process.env.TIKTOK_CLIENT_ID!,
+      clientSecret: process.env.TIKTOK_CLIENT_SECRET!,
+      profile(profile: { data: { user: { open_id: string; display_name: string; avatar_url: string } } }) {
+        return {
+          id: profile.data.user.open_id,
+          name: profile.data.user.display_name,
+          email: null,
+          image: profile.data.user.avatar_url,
+        };
       },
     },
+  ],
+  session: {
+    strategy: "jwt" as const,
   },
   callbacks: {
-    async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
-      // Standardize redirect to dashboard with connected param
+    // @ts-expect-error - token and account types
+    async jwt({ token, account }) {
+      if (account) {
+        token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+        token.provider = account.provider;
+      }
+      return token;
+    },
+    // @ts-expect-error - session and token types
+    async session({ session, token }) {
+      session.accessToken = token.accessToken;
+      session.provider = token.provider;
+      return session;
+    },
+    // @ts-expect-error - url and baseUrl types
+    async redirect({ url, baseUrl }) {
       if (url.includes("callback")) {
         const provider = url.split("/").pop();
         return `${baseUrl}/dashboard?connected=${provider}`;
@@ -92,48 +123,24 @@ export const authOptions = {
       else if (new URL(url).origin === baseUrl) return url;
       return `${baseUrl}/dashboard`;
     },
-    async jwt({ token, account, user }: { token: JWT; account: unknown; user?: unknown }) {
-      // @ts-expect-error - account is unknown
-      if (account) {
-        const accounts = (token.accounts as Record<string, unknown>) || {};
-        // @ts-expect-error - account is unknown
-        accounts[account.provider] = {
-          // @ts-expect-error - account is unknown
-          provider: account.provider,
-          // @ts-expect-error - account is unknown
-          type: account.type,
-          // @ts-expect-error - account is unknown
-          providerAccountId: account.providerAccountId,
-          // @ts-expect-error - account is unknown
-          access_token: account.access_token,
-          // @ts-expect-error - account is unknown
-          expires_at: account.expires_at,
-          // @ts-expect-error - account is unknown
-          refresh_token: account.refresh_token,
-          // @ts-expect-error - account is unknown
-          scope: account.scope,
-        };
-        token.accounts = accounts;
-      }
-      if (user) {
-        // @ts-expect-error - user is unknown
-        token.sub = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }: { session: Session; token: JWT }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-        session.accounts = (token.accounts as Record<string, unknown>) || {};
-      }
-      return session;
-    },
   },
-  pages: { 
-    signIn: '/', 
-    error: '/' 
+  pages: {
+    signIn: "/",
+    error: "/",
   },
+  debug: process.env.NODE_ENV === "development",
   secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax" as const,
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authOptions);
