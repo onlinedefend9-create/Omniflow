@@ -17,7 +17,10 @@ const providers = [
 
 export function Login() {
   const handleLogin = async (providerId: string) => {
-    await signIn(providerId, { callbackUrl: "/dashboard" })
+    const callbackUrl = providerId === 'tiktok' 
+      ? 'https://oneflow.site/api/auth/callback/tiktok' 
+      : '/dashboard';
+    await signIn(providerId, { callbackUrl })
   }
 
   return (

@@ -49,6 +49,12 @@ export default function Dashboard() {
   const [showSyncModal, setShowSyncModal] = useState(false);
 
   useEffect(() => {
+    if (status === "unauthenticated") {
+      setIsDemo(true);
+    }
+  }, [status]);
+
+  useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('login') === 'success') {
       setShowToast(true);
@@ -344,7 +350,12 @@ export default function Dashboard() {
                     icon={platform.icon}
                     name={platform.name}
                     connected={isConnected}
-                    onClick={() => signIn(platform.providerId, { callbackUrl: '/dashboard' })}
+                    onClick={() => {
+                      const callbackUrl = platform.id === 'tiktok' 
+                        ? 'https://oneflow.site/api/auth/callback/tiktok' 
+                        : '/dashboard';
+                      signIn(platform.providerId, { callbackUrl });
+                    }}
                   />
                 );
               })}

@@ -65,7 +65,7 @@ if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET) {
         client_key: process.env.TIKTOK_CLIENT_KEY,
         scope: "user.info.basic",
         response_type: "code",
-        redirect_uri: `https://${process.env.NEXTAUTH_URL?.replace(/^https?:\/\//, '') || 'ais-dev-ko5d2lgfyphaeecnao63ys-707578475350.europe-west2.run.app'}/api/auth/callback/tiktok`,
+        redirect_uri: `https://oneflow.site/api/auth/callback/tiktok`,
         prompt: "login",
       },
     },
@@ -98,7 +98,7 @@ if (process.env.TELEGRAM_BOT_TOKEN) {
       params: {
         client_id: process.env.TELEGRAM_BOT_TOKEN,
         response_type: "code",
-        redirect_uri: `${process.env.NEXTAUTH_URL || process.env.AUTH_URL || 'https://ais-dev-ko5d2lgfyphaeecnao63ys-707578475350.europe-west2.run.app'}/api/auth/callback/telegram`,
+        redirect_uri: `https://oneflow.site/api/auth/callback/telegram`,
       },
     },
     token: "https://oauth.telegram.org/token",
@@ -119,6 +119,7 @@ if (process.env.TELEGRAM_BOT_TOKEN) {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: NextAuthPrismaAdapter(prisma),
+  useSecureCookies: process.env.NODE_ENV === "production",
   providers: providers as import("next-auth/providers").Provider[],
   secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "fallback_secret_for_development_only_12345",
   trustHost: true,
