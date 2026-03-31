@@ -20,7 +20,8 @@ import {
   Layout,
   Eye,
   Upload,
-  Trash2
+  Trash2,
+  Linkedin
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
