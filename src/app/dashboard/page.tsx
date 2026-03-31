@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from "react";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Loader2,
@@ -37,10 +37,13 @@ const platforms = [
   { id: "rss", providerId: "rss", name: "RSS Feed", icon: Rss },
 ];
 
+import { TelegramLogin } from "@/components/TelegramLogin";
+
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const [isDemo, setIsDemo] = useState(false);
   const [showSyncModal, setShowSyncModal] = useState(false);
+  const [showTelegramModal, setShowTelegramModal] = useState(false);
   const [content, setContent] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [isPublishing, setIsPublishing] = useState(false);
@@ -95,8 +98,13 @@ export default function Dashboard() {
     const accounts = session?.accounts || {};
     const isConnected = !!accounts[providerId] || isDemo;
 
-    if (!isConnected && providerId !== 'rss') {
-      signIn(providerId, { callbackUrl: '/dashboard' });
+    if (!isConnected) {
+      if (providerId === 'telegram') {
+        setShowTelegramModal(true);
+        return;
+      }
+      // Standardized login route as requested
+      window.location.href = `/api/auth/${providerId}/login`;
       return;
     }
 
@@ -107,9 +115,52 @@ export default function Dashboard() {
     }
   };
 
+  const handleTelegramAuth = (user: Record<string, string>) => {
+    const params = new URLSearchParams(user);
+    window.location.href = `/api/auth/telegram/callback?${params.toString()}`;
+  };
+
   return (
     <div className="min-h-screen text-slate-200 pt-32 pb-12 px-4 md:px-8 lg:px-12 font-sans relative bg-[#09090B]">
       <SyncModal isOpen={showSyncModal} onClose={() => setShowSyncModal(false)} />
+      
+      {/* Telegram Login Modal */}
+      <AnimatePresence>
+        {showTelegramModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-[#18181B] border border-white/10 p-10 rounded-[40px] max-w-md w-full shadow-2xl text-center"
+            >
+              <Send className="w-16 h-16 text-blue-500 mb-8 mx-auto" />
+              <h2 className="text-3xl font-display font-black text-white mb-4 italic">Connect Telegram</h2>
+              <p className="text-slate-400 mb-10 text-sm leading-relaxed">
+                Use the official Telegram widget below to securely authorize OneFlow to post on your behalf.
+              </p>
+              <div className="flex justify-center mb-10">
+                <TelegramLogin 
+                  botUsername={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "OneFlowBot"} 
+                  onAuth={handleTelegramAuth} 
+                />
+              </div>
+              <button 
+                onClick={() => setShowTelegramModal(false)}
+                className="w-full py-4 text-zinc-500 hover:text-white font-black uppercase tracking-[0.2em] text-[10px] transition-colors"
+              >
+                Cancel
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Navbar />
       
       <div className="max-w-7xl mx-auto space-y-12">
