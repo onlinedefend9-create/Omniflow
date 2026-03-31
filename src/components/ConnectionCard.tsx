@@ -2,8 +2,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { LucideIcon } from 'lucide-react';
-import { GlassButton } from './GlassButton';
-import { StatusBadge } from './StatusBadge';
+import { GlassButton } from './ui/GlassButton';
+import { StatusBadge } from './ui/StatusBadge';
 
 interface ConnectionCardProps {
   icon: LucideIcon;

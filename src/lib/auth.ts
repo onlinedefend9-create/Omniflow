@@ -65,7 +65,7 @@ if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET) {
         client_key: process.env.TIKTOK_CLIENT_KEY,
         scope: "user.info.basic,video.upload,video.publish",
         response_type: "code",
-        redirect_uri: "https://oneflow.site/api/auth/callback/tiktok",
+        redirect_uri: `${process.env.APP_URL}/api/auth/callback/tiktok`,
       },
     },
     token: "https://open.tiktokapis.com/v2/oauth/token/",
@@ -91,7 +91,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: providers as import("next-auth/providers").Provider[],
   secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "fallback_secret_for_development_only_12345",
   trustHost: true,
-  basePath: "/api/auth",
   callbacks: {
     async signIn({ account }) {
       if (account && account.error) {
