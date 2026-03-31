@@ -15,11 +15,11 @@ interface ConnectionCardProps {
 export function ConnectionCard({ icon: Icon, name, connected, onClick }: ConnectionCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.3 }}
-      className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl flex flex-col justify-between h-full shadow-lg"
+      className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl flex flex-col justify-between h-full shadow-lg"
     >
       <div className="flex justify-between items-start mb-4">
         <div className="p-3 bg-white/5 rounded-lg border border-white/10">
@@ -32,9 +32,12 @@ export function ConnectionCard({ icon: Icon, name, connected, onClick }: Connect
         <h3 className="text-lg font-semibold text-white">{name}</h3>
       </div>
 
-      <GlassButton className="w-full" onClick={onClick}>
+      <button
+        onClick={onClick}
+        className="w-full py-2 px-4 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors border border-white/10"
+      >
         {connected ? 'Gérer' : 'Connecter'}
-      </GlassButton>
+      </button>
     </motion.div>
   );
 }

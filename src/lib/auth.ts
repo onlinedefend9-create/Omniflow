@@ -86,6 +86,36 @@ if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET) {
   console.warn("⚠️ Missing TIKTOK_CLIENT_KEY or TIKTOK_CLIENT_SECRET");
 }
 
+if (process.env.TELEGRAM_BOT_TOKEN) {
+  providers.push({
+    id: "telegram",
+    name: "Telegram",
+    type: "oauth",
+    // Telegram auth is usually handled via a widget, but for OAuth flow:
+    authorization: {
+      url: "https://oauth.telegram.org/auth",
+      params: {
+        client_id: process.env.TELEGRAM_BOT_TOKEN,
+        response_type: "code",
+        redirect_uri: `${process.env.NEXTAUTH_URL || process.env.AUTH_URL || 'https://ais-dev-ko5d2lgfyphaeecnao63ys-707578475350.europe-west2.run.app'}/api/auth/callback/telegram`,
+      },
+    },
+    token: "https://oauth.telegram.org/token",
+    userinfo: "https://oauth.telegram.org/user",
+    profile(profile: any) {
+      return {
+        id: profile.id,
+        name: profile.first_name + (profile.last_name ? ` ${profile.last_name}` : ''),
+        image: profile.photo_url,
+      };
+    },
+    clientId: process.env.TELEGRAM_BOT_TOKEN,
+    clientSecret: "", // Telegram bot auth might not need a secret in the same way
+  });
+} else {
+  console.warn("⚠️ Missing TELEGRAM_BOT_TOKEN");
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: NextAuthPrismaAdapter(prisma),
   providers: providers as import("next-auth/providers").Provider[],
