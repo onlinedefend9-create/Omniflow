@@ -12,6 +12,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
+      accountsCount: number;
     } & DefaultSession["user"];
     accessToken?: string;
     provider?: string;
@@ -22,6 +23,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     accessToken?: string;
     provider?: string;
+    accountsCount?: number;
   }
 }
 
@@ -109,10 +111,23 @@ export const authOptions = {
     strategy: "jwt" as const,
   },
   callbacks: {
-    async jwt({ token, account }: { token: JWT; account: unknown }) {
-      if (account && typeof account === "object" && "access_token" in account && "provider" in account) {
-        token.accessToken = account.access_token as string;
-        token.provider = account.provider as string;
+    async jwt({ token, user, account }: { token: JWT; user?: { id: string }; account?: { access_token?: string; provider?: string } }) {
+      if (account && typeof account === "object") {
+        if (account.access_token) token.accessToken = account.access_token;
+        if (account.provider) token.provider = account.provider;
+      }
+      if (user) {
+        // Fetch account count on first sign in
+        const count = await prisma.account.count({
+          where: { userId: user.id }
+        });
+        token.accountsCount = count;
+      } else if (token.sub) {
+        // Refresh account count on subsequent requests
+        const count = await prisma.account.count({
+          where: { userId: token.sub }
+        });
+        token.accountsCount = count;
       }
       return token;
     },
@@ -121,6 +136,7 @@ export const authOptions = {
       session.provider = token.provider;
       if (session.user && token.sub) {
         session.user.id = token.sub;
+        session.user.accountsCount = token.accountsCount || 0;
       }
       return session;
     },

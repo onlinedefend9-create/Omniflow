@@ -17,6 +17,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  role          String    @default("user")
   autoLike      Boolean   @default(false)
   autoReply     Boolean   @default(false)
   accounts      Account[]

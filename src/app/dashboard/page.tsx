@@ -39,6 +39,8 @@ export default function DashboardPage() {
   const { data: session, status } = useSession();
   const isAuthenticated = status === "authenticated";
   const isLoading = status === "loading";
+  const accountsCount = session?.user?.accountsCount || 0;
+  const isArtistMode = !isAuthenticated || accountsCount === 0;
 
   if (isLoading) {
     return (
@@ -126,7 +128,7 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            {!isAuthenticated && (
+            {isArtistMode && (
               <div className="flex items-center gap-4 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl text-yellow-500 text-sm font-bold animate-in fade-in slide-in-from-right-4">
                 <AlertCircle className="w-5 h-5" />
                 <span>Artist Mode Active — Mock Data Displayed</span>
@@ -166,7 +168,7 @@ export default function DashboardPage() {
 
           {/* Multi-Post Composer */}
           <section className="max-w-4xl">
-            <MultiPostComposer connectedAccountsCount={isAuthenticated ? 2 : 1} />
+            <MultiPostComposer connectedAccountsCount={accountsCount} />
           </section>
 
           {/* Accounts Section */}
@@ -183,60 +185,77 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <AnimatePresence mode="wait">
-                {(isAuthenticated ? [] : MOCK_ACCOUNTS).map((account, i) => (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ delay: i * 0.1 }}
-                    key={account.id}
-                    className="group relative p-8 bg-zinc-950 border border-white/5 rounded-[40px] overflow-hidden hover:border-white/10 transition-all duration-500"
-                  >
-                    <div className="relative z-10 flex flex-col h-full justify-between gap-8">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-2">
-                          <div className={cn("p-4 bg-white/5 rounded-3xl inline-flex", account.color)}>
-                            <account.icon className="w-8 h-8" />
+                {isArtistMode ? (
+                  MOCK_ACCOUNTS.map((account, i) => (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ delay: i * 0.1 }}
+                      key={account.id}
+                      className="group relative p-8 bg-zinc-950 border border-white/5 rounded-[40px] overflow-hidden hover:border-white/10 transition-all duration-500"
+                    >
+                      <div className="relative z-10 flex flex-col h-full justify-between gap-8">
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-2">
+                            <div className={cn("p-4 bg-white/5 rounded-3xl inline-flex", account.color)}>
+                              <account.icon className="w-8 h-8" />
+                            </div>
+                            <div>
+                              <h3 className="text-xl font-black italic tracking-tighter uppercase">
+                                {account.name}
+                              </h3>
+                              <p className="text-sm font-bold text-zinc-500">
+                                {account.handle}
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <h3 className="text-xl font-black italic tracking-tighter uppercase">
-                              {account.name}
-                            </h3>
-                            <p className="text-sm font-bold text-zinc-500">
-                              {account.handle}
-                            </p>
+                          <div className="flex flex-col items-end">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                              Followers
+                            </span>
+                            <span className="text-2xl font-black italic tracking-tighter">
+                              {account.followers}
+                            </span>
                           </div>
                         </div>
-                        <div className="flex flex-col items-end">
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
-                            Followers
-                          </span>
-                          <span className="text-2xl font-black italic tracking-tighter">
-                            {account.followers}
-                          </span>
+
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              animate={{ width: "70%" }}
+                              className="h-full bg-white"
+                            />
+                          </div>
+                          <span className="text-[10px] font-black text-zinc-500">70%</span>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
-                          <motion.div 
-                            initial={{ width: 0 }}
-                            animate={{ width: "70%" }}
-                            className="h-full bg-white"
-                          />
-                        </div>
-                        <span className="text-[10px] font-black text-zinc-500">70%</span>
-                      </div>
+                      {/* Glassmorphism background effect */}
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 blur-[100px] -mr-32 -mt-32 rounded-full group-hover:bg-white/10 transition-colors duration-500" />
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="lg:col-span-3 p-12 bg-white/5 border border-dashed border-white/10 rounded-[40px] flex flex-col items-center justify-center text-center space-y-6">
+                    <div className="w-20 h-20 bg-white/5 rounded-[32px] flex items-center justify-center">
+                      <Plus className="w-10 h-10 text-zinc-500" />
                     </div>
-
-                    {/* Glassmorphism background effect */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 blur-[100px] -mr-32 -mt-32 rounded-full group-hover:bg-white/10 transition-colors duration-500" />
-                  </motion.div>
-                ))}
+                    <div className="max-w-md space-y-2">
+                      <h3 className="text-2xl font-black italic tracking-tighter uppercase">
+                        Real Data Connected
+                      </h3>
+                      <p className="text-zinc-500 font-medium">
+                        You have {accountsCount} real account(s) connected. Statistics and insights are being synchronized.
+                      </p>
+                    </div>
+                    <ConnectButtons />
+                  </div>
+                )}
               </AnimatePresence>
 
               {/* Empty state / Connect Prompt */}
-              {!isAuthenticated && (
+              {isArtistMode && (
                 <div className="lg:col-span-3 p-12 bg-white/5 border border-dashed border-white/10 rounded-[40px] flex flex-col items-center justify-center text-center space-y-6">
                   <div className="w-20 h-20 bg-white/5 rounded-[32px] flex items-center justify-center">
                     <Plus className="w-10 h-10 text-zinc-500" />
