@@ -102,11 +102,11 @@ if (process.env.TELEGRAM_BOT_TOKEN) {
     },
     token: "https://oauth.telegram.org/token",
     userinfo: "https://oauth.telegram.org/user",
-    profile(profile: any) {
+    profile(profile: Record<string, any>) {
       return {
-        id: profile.id,
-        name: profile.first_name + (profile.last_name ? ` ${profile.last_name}` : ''),
-        image: profile.photo_url,
+        id: profile.id as string,
+        name: `${profile.first_name}${profile.last_name ? ` ${profile.last_name}` : ''}`,
+        image: profile.photo_url as string,
       };
     },
     clientId: process.env.TELEGRAM_BOT_TOKEN,
@@ -130,7 +130,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return true;
     },
-    async redirect({ url, baseUrl }) {
+    async redirect({ url: _url, baseUrl: _baseUrl }) {
       // Force redirect to dashboard on success
       return `/dashboard?login=success`;
     },
