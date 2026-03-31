@@ -1,292 +1,262 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useSession, signIn } from "next-auth/react";
-import { motion, AnimatePresence } from "motion/react";
+import { useSession, signOut } from "next-auth/react";
 import { 
-  Loader2,
+  LayoutDashboard, 
+  Users, 
+  BarChart3, 
+  Settings, 
+  LogOut, 
+  Plus, 
+  Youtube, 
+  Facebook, 
   Music2,
-  Share2,
-  Layout,
+  TrendingUp,
   Eye,
-  Upload,
-  Youtube,
-  Instagram,
-  Facebook,
   MessageSquare,
-  Twitter,
-  Linkedin,
-  Send,
-  Rss
+  Share2,
+  AlertCircle
 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { ConnectButtons } from "@/components/ConnectButtons";
+import { MultiPostComposer } from "@/components/MultiPostComposer";
 import { cn } from "@/lib/utils";
-import Navbar from "@/components/Navbar";
-import { ConnectionCard } from "@/components/ConnectionCard";
-import { AdPlaceholder } from "@/components/AdPlaceholder";
-import { SyncModal } from "@/components/SyncModal";
 
-const platforms = [
-  { id: "tiktok", providerId: "tiktok", name: "TikTok", icon: Music2 },
-  { id: "youtube", providerId: "google", name: "YouTube", icon: Youtube },
-  { id: "instagram", providerId: "facebook", name: "Instagram", icon: Instagram },
-  { id: "facebook", providerId: "facebook", name: "Facebook", icon: Facebook },
-  { id: "threads", providerId: "facebook", name: "Threads", icon: MessageSquare },
-  { id: "x", providerId: "twitter", name: "X", icon: Twitter },
-  { id: "linkedin", providerId: "linkedin", name: "LinkedIn", icon: Linkedin },
-  { id: "telegram", providerId: "telegram", name: "Telegram", icon: Send },
-  { id: "rss", providerId: "rss", name: "RSS Feed", icon: Rss },
+const MOCK_ACCOUNTS = [
+  { id: "yt-1", platform: "YouTube", name: "Artist Channel", handle: "@artist_official", followers: "1.2M", icon: Youtube, color: "text-red-500" },
+  { id: "fb-1", platform: "Facebook", name: "Artist Page", handle: "/artist.official", followers: "850K", icon: Facebook, color: "text-blue-500" },
+  { id: "tk-1", platform: "TikTok", name: "Artist TikTok", handle: "@artist_tok", followers: "2.4M", icon: Music2, color: "text-pink-500" },
 ];
 
-import { TelegramLogin } from "@/components/TelegramLogin";
+const MOCK_STATS = [
+  { label: "Total Views", value: "4.8M", change: "+12.5%", icon: Eye },
+  { label: "Engagement", value: "852K", change: "+8.2%", icon: MessageSquare },
+  { label: "Shares", value: "124K", change: "+15.1%", icon: Share2 },
+  { label: "Growth", value: "+24K", change: "+5.4%", icon: TrendingUp },
+];
 
-export default function Dashboard() {
+export default function DashboardPage() {
   const { data: session, status } = useSession();
-  const [isDemo, setIsDemo] = useState(false);
-  const [showSyncModal, setShowSyncModal] = useState(false);
-  const [showTelegramModal, setShowTelegramModal] = useState(false);
-  const [content, setContent] = useState("");
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [media, setMedia] = useState<File | null>(null);
-  const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<"editor" | "preview">("editor");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const isAuthenticated = status === "authenticated";
+  const isLoading = status === "loading";
 
-  useEffect(() => {
-    setMounted(true);
-    if (status === "unauthenticated") {
-      setIsDemo(true);
-    }
-
-    // Handle 'connected' query param
-    const urlParams = new URLSearchParams(window.location.search);
-    const connected = urlParams.get("connected");
-    if (connected) {
-      // Show success toast or modal
-      setShowSyncModal(true);
-      // Clean up URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, [status]);
-
-  useEffect(() => {
-    if (!media) return;
-    const objectUrl = URL.createObjectURL(media);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [media]);
-
-  if (status === "loading" || !mounted) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#09090B] flex items-center justify-center">
-        <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full"
+        />
       </div>
     );
   }
 
-  const handlePublish = async () => {
-    if (!content.trim() || selectedPlatforms.length === 0) {
-      alert("Veuillez saisir du contenu et sélectionner au moins une plateforme.");
-      return;
-    }
-    setIsPublishing(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      alert(`Contenu publié avec succès sur ${selectedPlatforms.length} plateformes !`);
-      setContent("");
-      setSelectedPlatforms([]);
-      setMedia(null);
-    } catch (error) {
-      console.error(error);
-      alert("Échec de la publication. Veuillez réessayer.");
-    } finally {
-      setIsPublishing(false);
-    }
-  };
-
-  const togglePlatform = (platformId: string, providerId: string) => {
-    // @ts-expect-error - accounts is not defined on session
-    const accounts = session?.accounts || {};
-    const isConnected = !!accounts[providerId] || isDemo;
-
-    if (!isConnected) {
-      if (providerId === 'telegram') {
-        setShowTelegramModal(true);
-        return;
-      }
-      // Standardized login via NextAuth
-      signIn(providerId, { callbackUrl: `/dashboard?connected=${providerId}` });
-      return;
-    }
-
-    if (selectedPlatforms.includes(platformId)) {
-      setSelectedPlatforms(selectedPlatforms.filter(id => id !== platformId));
-    } else {
-      setSelectedPlatforms([...selectedPlatforms, platformId]);
-    }
-  };
-
-  const handleTelegramAuth = (user: Record<string, string>) => {
-    const params = new URLSearchParams(user);
-    window.location.href = `/api/auth/telegram/callback?${params.toString()}`;
-  };
-
   return (
-    <div className="min-h-screen text-slate-200 pt-32 pb-12 px-4 md:px-8 lg:px-12 font-sans relative bg-[#09090B]">
-      <SyncModal isOpen={showSyncModal} onClose={() => setShowSyncModal(false)} />
-      
-      {/* Telegram Login Modal */}
-      <AnimatePresence>
-        {showTelegramModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[#18181B] border border-white/10 p-10 rounded-[40px] max-w-md w-full shadow-2xl text-center"
-            >
-              <Send className="w-16 h-16 text-blue-500 mb-8 mx-auto" />
-              <h2 className="text-3xl font-display font-black text-white mb-4 italic">Connect Telegram</h2>
-              <p className="text-slate-400 mb-10 text-sm leading-relaxed">
-                Use the official Telegram widget below to securely authorize OneFlow to post on your behalf.
-              </p>
-              <div className="flex justify-center mb-10">
-                <TelegramLogin 
-                  botUsername={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "OneFlowBot"} 
-                  onAuth={handleTelegramAuth} 
-                />
-              </div>
-              <button 
-                onClick={() => setShowTelegramModal(false)}
-                className="w-full py-4 text-zinc-500 hover:text-white font-black uppercase tracking-[0.2em] text-[10px] transition-colors"
-              >
-                Cancel
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <Navbar />
-      
-      <div className="max-w-7xl mx-auto space-y-12">
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
-            <h1 className="text-4xl font-display font-black tracking-tighter text-white leading-none">
-              Content <span className="text-blue-500">Studio</span>
-            </h1>
-            <p className="text-zinc-500 font-bold uppercase tracking-[0.3em] text-[10px] mt-4">
-              {isDemo ? "Mode Artiste (Aperçu Live)" : `Connecté: ${session?.user?.name}`}
-            </p>
-          </motion.div>
-          <button 
-            onClick={() => setIsDemo(!isDemo)}
-            className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors border border-white/10"
-          >
-            {isDemo ? "Quitter la démo" : "Explorer la démo (Mode Artiste)"}
-          </button>
-        </header>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl">
-            <h4 className="text-slate-400 text-sm">Vues (Simulées)</h4>
-            <p className="text-3xl font-bold text-white">1,240,000</p>
-          </div>
-          <AdPlaceholder className="h-full w-full min-h-[100px]" />
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl">
-            <h4 className="text-slate-400 text-sm">Engagement</h4>
-            <p className="text-3xl font-bold text-pink-500">12.4%</p>
+    <div className="min-h-screen bg-black text-white selection:bg-white/10">
+      {/* Sidebar Navigation */}
+      <aside className="fixed left-0 top-0 bottom-0 w-20 lg:w-64 bg-zinc-950 border-r border-white/5 flex flex-col z-50">
+        <div className="p-6 lg:p-8">
+          <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-2xl flex items-center justify-center">
+            <span className="text-black font-black text-xl lg:text-2xl italic tracking-tighter">OF</span>
           </div>
         </div>
 
-        <main className="grid lg:grid-cols-12 gap-8 items-start dashboard-main-content">
-          <section className="lg:col-span-8 space-y-8">
-            <div className="flex items-center gap-3 p-1.5 bg-white/5 rounded-[24px] w-fit border border-white/10 backdrop-blur-xl">
-              <button 
-                onClick={() => setActiveTab("editor")} 
-                className={cn("flex items-center gap-3 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500", activeTab === "editor" ? "bg-blue-600 text-white" : "text-zinc-500 hover:text-white")}
-              >
-                <Layout className="w-4 h-4" /> Editor
-              </button>
-              <button 
-                onClick={() => setActiveTab("preview")} 
-                className={cn("flex items-center gap-3 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500", activeTab === "preview" ? "bg-blue-600 text-white" : "text-zinc-500 hover:text-white")}
-              >
-                <Eye className="w-4 h-4" /> Preview
-              </button>
-            </div>
-
-            <AnimatePresence mode="wait">
-              {activeTab === "editor" ? (
-                <motion.div key="editor" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="bg-[#18181B] border border-[#27272A] rounded-[40px] p-10 space-y-10">
-                  <textarea 
-                    value={content} 
-                    onChange={(e) => setContent(e.target.value)} 
-                    placeholder="What's the global impact today?" 
-                    className="w-full h-72 bg-transparent border-none focus:ring-0 text-3xl font-display font-bold text-white placeholder:text-zinc-800 resize-none leading-tight" 
-                  />
-                  <div className="flex flex-wrap items-center gap-5 pt-10 border-t border-white/5">
-                    <div 
-                      onClick={() => fileInputRef.current?.click()} 
-                      className="flex-1 flex items-center gap-6 px-10 py-8 bg-[#09090B] rounded-[32px] cursor-pointer border border-[#27272A] border-dashed hover:border-blue-500/40 transition-all duration-500"
-                    >
-                      <Upload className="w-6 h-6 text-blue-500" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">Drop Media Here</span>
-                      <input 
-                        ref={fileInputRef} 
-                        type="file" 
-                        accept="image/*,video/*" 
-                        className="hidden" 
-                        onChange={(e) => setMedia(e.target.files?.[0] || null)} 
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div key="preview" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="bg-[#18181B] border border-[#27272A] rounded-[40px] p-10 min-h-[500px] flex items-center justify-center">
-                  <p className="text-zinc-600 font-bold uppercase tracking-[0.2em] text-[10px]">Your vision will appear here</p>
-                </motion.div>
+        <nav className="flex-1 px-4 lg:px-6 space-y-2">
+          {[
+            { icon: LayoutDashboard, label: "Overview", active: true },
+            { icon: BarChart3, label: "Analytics" },
+            { icon: Users, label: "Audience" },
+            { icon: Settings, label: "Settings" },
+          ].map((item) => (
+            <button
+              key={item.label}
+              className={cn(
+                "w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 group",
+                item.active ? "bg-white text-black" : "text-zinc-500 hover:bg-white/5 hover:text-white"
               )}
-            </AnimatePresence>
-
-            <button 
-              onClick={handlePublish} 
-              disabled={isPublishing || !content.trim() || selectedPlatforms.length === 0} 
-              className="w-full py-8 bg-blue-600 text-white rounded-[40px] font-display font-black text-2xl flex items-center justify-center gap-5 disabled:opacity-50"
             >
-              {isPublishing ? <Loader2 className="w-8 h-8 animate-spin" /> : <Share2 className="w-8 h-8" />}
-              {isPublishing ? "Publishing..." : `Ignite ${selectedPlatforms.length} Networks`}
+              <item.icon className="w-6 h-6" />
+              <span className="hidden lg:block font-bold text-sm tracking-tight">{item.label}</span>
             </button>
-          </section>
+          ))}
+        </nav>
 
-          <section className="lg:col-span-4 space-y-8">
-            <div className="grid grid-cols-2 gap-5">
-              {platforms.map((platform) => {
-                // @ts-expect-error - accounts is not defined on session
-                const accounts = session?.accounts || {};
-                const isConnected = !!accounts[platform.providerId] || isDemo;
-                const isSelected = selectedPlatforms.includes(platform.id);
-
-                return (
-                  <ConnectionCard
-                    key={platform.id}
-                    icon={platform.icon}
-                    name={platform.name}
-                    connected={isConnected}
-                    selected={isSelected}
-                    onClick={() => togglePlatform(platform.id, platform.providerId)}
-                  />
-                );
-              })}
+        <div className="p-6 lg:p-8 border-t border-white/5">
+          {isAuthenticated ? (
+            <button
+              onClick={() => signOut()}
+              className="w-full flex items-center gap-4 p-4 rounded-2xl text-red-500 hover:bg-red-500/10 transition-all duration-300 group"
+            >
+              <LogOut className="w-6 h-6" />
+              <span className="hidden lg:block font-bold text-sm tracking-tight">Sign Out</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-4 p-4">
+              <div className="w-10 h-10 rounded-full bg-zinc-800 animate-pulse" />
+              <div className="hidden lg:block space-y-1">
+                <div className="w-24 h-3 bg-zinc-800 rounded animate-pulse" />
+                <div className="w-16 h-2 bg-zinc-800 rounded animate-pulse" />
+              </div>
             </div>
-            <AdPlaceholder className="h-64 w-full" />
+          )}
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="pl-20 lg:pl-64 min-h-screen">
+        <div className="max-w-[1600px] mx-auto p-6 lg:p-12 space-y-12">
+          
+          {/* Header Section */}
+          <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">
+                  Live Dashboard
+                </span>
+              </div>
+              <h1 className="text-5xl lg:text-7xl font-black italic tracking-tighter uppercase leading-none">
+                {isAuthenticated ? `Welcome, ${session.user?.name?.split(' ')[0]}` : "Artist Mode"}
+              </h1>
+              <p className="text-zinc-500 max-w-xl font-medium leading-relaxed">
+                {isAuthenticated 
+                  ? "Your global social media performance is synchronized. Manage all platforms from one unified studio."
+                  : "Experience the OneFlow dashboard with sample data. Connect your real accounts to start dominating."}
+              </p>
+            </div>
+
+            {!isAuthenticated && (
+              <div className="flex items-center gap-4 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl text-yellow-500 text-sm font-bold animate-in fade-in slide-in-from-right-4">
+                <AlertCircle className="w-5 h-5" />
+                <span>Artist Mode Active — Mock Data Displayed</span>
+              </div>
+            )}
+          </header>
+
+          {/* Stats Grid */}
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {MOCK_STATS.map((stat, i) => (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                key={stat.label}
+                className="p-8 bg-zinc-950 border border-white/5 rounded-[32px] space-y-4 hover:border-white/10 transition-colors group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="p-3 bg-white/5 rounded-xl group-hover:scale-110 transition-transform duration-500">
+                    <stat.icon className="w-5 h-5 text-zinc-400" />
+                  </div>
+                  <span className="text-xs font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded-lg">
+                    {stat.change}
+                  </span>
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                    {stat.label}
+                  </span>
+                  <p className="text-3xl font-black italic tracking-tighter">
+                    {stat.value}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </section>
-        </main>
-      </div>
+
+          {/* Multi-Post Composer */}
+          <section className="max-w-4xl">
+            <MultiPostComposer connectedAccountsCount={isAuthenticated ? 2 : 1} />
+          </section>
+
+          {/* Accounts Section */}
+          <section className="space-y-8">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-black italic tracking-tighter uppercase">
+                Connected Platforms
+              </h2>
+              <button className="flex items-center gap-2 px-6 py-3 bg-white text-black rounded-full font-bold text-sm hover:scale-105 transition-transform">
+                <Plus className="w-4 h-4" />
+                Add Platform
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <AnimatePresence mode="wait">
+                {(isAuthenticated ? [] : MOCK_ACCOUNTS).map((account, i) => (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ delay: i * 0.1 }}
+                    key={account.id}
+                    className="group relative p-8 bg-zinc-950 border border-white/5 rounded-[40px] overflow-hidden hover:border-white/10 transition-all duration-500"
+                  >
+                    <div className="relative z-10 flex flex-col h-full justify-between gap-8">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-2">
+                          <div className={cn("p-4 bg-white/5 rounded-3xl inline-flex", account.color)}>
+                            <account.icon className="w-8 h-8" />
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-black italic tracking-tighter uppercase">
+                              {account.name}
+                            </h3>
+                            <p className="text-sm font-bold text-zinc-500">
+                              {account.handle}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                            Followers
+                          </span>
+                          <span className="text-2xl font-black italic tracking-tighter">
+                            {account.followers}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: "70%" }}
+                            className="h-full bg-white"
+                          />
+                        </div>
+                        <span className="text-[10px] font-black text-zinc-500">70%</span>
+                      </div>
+                    </div>
+
+                    {/* Glassmorphism background effect */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 blur-[100px] -mr-32 -mt-32 rounded-full group-hover:bg-white/10 transition-colors duration-500" />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+
+              {/* Empty state / Connect Prompt */}
+              {!isAuthenticated && (
+                <div className="lg:col-span-3 p-12 bg-white/5 border border-dashed border-white/10 rounded-[40px] flex flex-col items-center justify-center text-center space-y-6">
+                  <div className="w-20 h-20 bg-white/5 rounded-[32px] flex items-center justify-center">
+                    <Plus className="w-10 h-10 text-zinc-500" />
+                  </div>
+                  <div className="max-w-md space-y-2">
+                    <h3 className="text-2xl font-black italic tracking-tighter uppercase">
+                      Connect Your Real Accounts
+                    </h3>
+                    <p className="text-zinc-500 font-medium">
+                      Unlock real-time analytics, automated publishing, and audience insights for your social media empire.
+                    </p>
+                  </div>
+                  <ConnectButtons />
+                </div>
+              )}
+            </div>
+          </section>
+
+        </div>
+      </main>
     </div>
   );
 }

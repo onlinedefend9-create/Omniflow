@@ -1,11 +1,13 @@
-import NextAuth, { type DefaultSession } from "next-auth";
+import NextAuth, { type DefaultSession, type Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
-import TwitterProvider from "next-auth/providers/twitter";
 import LinkedInProvider from "next-auth/providers/linkedin";
+import TwitterProvider from "next-auth/providers/twitter";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
+import type { JWT } from "next-auth/jwt";
 
+// Type Augmentation for Session and JWT
 declare module "next-auth" {
   interface Session {
     user: {
@@ -19,7 +21,6 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     accessToken?: string;
-    refreshToken?: string;
     provider?: string;
   }
 }
@@ -36,6 +37,9 @@ export const authOptions = {
           prompt: "consent",
           access_type: "offline",
           response_type: "code",
+          redirect_uri: process.env.NODE_ENV === "production" 
+            ? "https://oneflow.site/api/auth/callback/google" 
+            : undefined,
         },
       },
     }),
@@ -44,7 +48,9 @@ export const authOptions = {
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: "email,public_profile,pages_show_list,pages_read_engagement,pages_manage_posts,instagram_basic,instagram_content_publish",
+          redirect_uri: process.env.NODE_ENV === "production" 
+            ? "https://oneflow.site/api/auth/callback/facebook" 
+            : undefined,
         },
       },
     }),
@@ -53,7 +59,9 @@ export const authOptions = {
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: "openid profile email w_member_social",
+          redirect_uri: process.env.NODE_ENV === "production" 
+            ? "https://oneflow.site/api/auth/callback/linkedin" 
+            : undefined,
         },
       },
     }),
@@ -63,7 +71,9 @@ export const authOptions = {
       version: "2.0",
       authorization: {
         params: {
-          scope: "tweet.read tweet.write users.read offline.access",
+          redirect_uri: process.env.NODE_ENV === "production" 
+            ? "https://oneflow.site/api/auth/callback/twitter" 
+            : undefined,
         },
       },
     }),
@@ -74,10 +84,11 @@ export const authOptions = {
       authorization: {
         url: "https://www.tiktok.com/v2/auth/authorize/",
         params: {
-          client_key: process.env.TIKTOK_CLIENT_ID!,
           scope: "user.info.basic,video.list,video.upload",
           response_type: "code",
-          redirect_uri: "https://www.oneflow.site/api/auth/callback/tiktok",
+          redirect_uri: process.env.NODE_ENV === "production" 
+            ? "https://oneflow.site/api/auth/callback/tiktok" 
+            : undefined,
         },
       },
       token: "https://open.tiktokapis.com/v2/oauth/token/",
@@ -88,8 +99,8 @@ export const authOptions = {
         return {
           id: profile.data.user.open_id,
           name: profile.data.user.display_name,
-          email: null,
           image: profile.data.user.avatar_url,
+          email: null, // TikTok doesn't provide email by default
         };
       },
     },
@@ -98,49 +109,51 @@ export const authOptions = {
     strategy: "jwt" as const,
   },
   callbacks: {
-    // @ts-expect-error - token and account types
-    async jwt({ token, account }) {
-      if (account) {
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
-        token.provider = account.provider;
+    async jwt({ token, account }: { token: JWT; account: unknown }) {
+      if (account && typeof account === "object" && "access_token" in account && "provider" in account) {
+        token.accessToken = account.access_token as string;
+        token.provider = account.provider as string;
       }
       return token;
     },
-    // @ts-expect-error - session and token types
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       session.accessToken = token.accessToken;
       session.provider = token.provider;
+      if (session.user && token.sub) {
+        session.user.id = token.sub;
+      }
       return session;
     },
-    // @ts-expect-error - url and baseUrl types
-    async redirect({ url, baseUrl }) {
-      if (url.includes("callback")) {
-        const provider = url.split("/").pop();
-        return `${baseUrl}/dashboard?connected=${provider}`;
-      }
+    async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
+      // Force redirection to dashboard after login
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       else if (new URL(url).origin === baseUrl) return url;
       return `${baseUrl}/dashboard`;
     },
   },
-  pages: {
-    signIn: "/",
-    error: "/",
-  },
-  debug: process.env.NODE_ENV === "development",
-  secret: process.env.NEXTAUTH_SECRET,
+  useSecureCookies: true,
   cookies: {
     sessionToken: {
-      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
+      name: `__Secure-next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: "lax" as const,
+        sameSite: "none" as const,
         path: "/",
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
+      },
+    },
+    csrfToken: {
+      name: `__Host-next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "none" as const,
+        path: "/",
+        secure: true,
       },
     },
   },
+  debug: process.env.NODE_ENV === "development",
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authOptions);
