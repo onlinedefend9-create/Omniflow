@@ -9,9 +9,10 @@ interface ConnectionCardProps {
   icon: LucideIcon;
   name: string;
   connected: boolean;
+  onClick: () => void;
 }
 
-export function ConnectionCard({ icon: Icon, name, connected }: ConnectionCardProps) {
+export function ConnectionCard({ icon: Icon, name, connected, onClick }: ConnectionCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -31,7 +32,7 @@ export function ConnectionCard({ icon: Icon, name, connected }: ConnectionCardPr
         <h3 className="text-lg font-semibold text-white">{name}</h3>
       </div>
 
-      <GlassButton className="w-full">
+      <GlassButton className="w-full" onClick={onClick}>
         {connected ? 'Gérer' : 'Connecter'}
       </GlassButton>
     </motion.div>

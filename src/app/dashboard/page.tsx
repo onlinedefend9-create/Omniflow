@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
+import confetti from "canvas-confetti";
 import { 
   Send, 
   Video, 
@@ -21,7 +22,8 @@ import {
   Eye,
   Upload,
   Trash2,
-  Linkedin
+  Linkedin,
+  CheckCircle2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
@@ -40,6 +42,24 @@ const platforms = [
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('login') === 'success') {
+      setShowToast(true);
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ffffff', '#60a5fa', '#93c5fd']
+      });
+      
+      const timer = setTimeout(() => setShowToast(false), 4000);
+      window.history.replaceState({}, '', window.location.pathname);
+      return () => clearTimeout(timer);
+    }
+  }, []);
   const [content, setContent] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [isPublishing, setIsPublishing] = useState(false);
@@ -97,6 +117,19 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen text-slate-200 pt-32 pb-12 px-4 md:px-8 lg:px-12 font-sans relative bg-[#09090B]">
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, x: 20 }}
+            animate={{ opacity: 1, y: 0, x: 0 }}
+            exit={{ opacity: 0, y: 20, x: 20 }}
+            className="fixed bottom-8 right-8 z-50 flex items-center gap-4 px-6 py-4 bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl"
+          >
+            <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+            <p className="text-sm font-medium text-white">Connexion réussie ! Vos flux sont désormais synchronisés.</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <Navbar />
       
       <div className="max-w-7xl mx-auto space-y-12">
@@ -286,6 +319,7 @@ export default function Dashboard() {
                     icon={platform.icon}
                     name={platform.name}
                     connected={isConnected}
+                    onClick={() => signIn(platform.providerId, { callbackUrl: '/dashboard' })}
                   />
                 );
               })}
