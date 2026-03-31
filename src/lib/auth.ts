@@ -63,9 +63,10 @@ if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET) {
       url: "https://www.tiktok.com/v2/auth/authorize/",
       params: {
         client_key: process.env.TIKTOK_CLIENT_KEY,
-        scope: "user.info.basic,video.upload,video.publish",
+        scope: "user.info.basic",
         response_type: "code",
-        redirect_uri: `${process.env.NEXTAUTH_URL || process.env.AUTH_URL || 'https://ais-dev-ko5d2lgfyphaeecnao63ys-707578475350.europe-west2.run.app'}/api/auth/callback/tiktok`,
+        redirect_uri: `https://${process.env.NEXTAUTH_URL?.replace(/^https?:\/\//, '') || 'ais-dev-ko5d2lgfyphaeecnao63ys-707578475350.europe-west2.run.app'}/api/auth/callback/tiktok`,
+        prompt: "login",
       },
     },
     token: "https://open.tiktokapis.com/v2/oauth/token/",
