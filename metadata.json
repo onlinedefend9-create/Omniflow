@@ -1,9 +1,0 @@
-{
-  "name": "OneFlow",
-  "description": "SaaS de multi-publication centralisé pour réseaux sociaux (YouTube, TikTok, Meta, X, LinkedIn, Telegram).",
-  "requestFramePermissions": [
-    "camera",
-    "microphone",
-    "geolocation"
-  ]
-}
