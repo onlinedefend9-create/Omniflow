@@ -30,15 +30,16 @@ export async function GET() {
         push: pushOutput,
       },
     });
-  } catch (error: any) {
-    console.error("Database Synchronization Error:", error);
+  } catch (error) {
+    const err = error as { message: string; stderr?: Buffer };
+    console.error("Database Synchronization Error:", err);
     
     return NextResponse.json(
       {
         success: false,
         message: "Database synchronization failed.",
-        error: error.message,
-        stderr: error.stderr?.toString(),
+        error: err.message,
+        stderr: err.stderr?.toString(),
       },
       { status: 500 }
     );
