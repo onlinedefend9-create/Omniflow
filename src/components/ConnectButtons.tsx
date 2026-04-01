@@ -3,14 +3,10 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { 
-  Music2, 
-  Youtube, 
-  Facebook, 
-  Twitter, 
-  Linkedin, 
   Loader2,
   AlertCircle
 } from "lucide-react";
+import { FaYoutube as Youtube, FaFacebook as Facebook, FaTiktok as Music2, FaTwitter as Twitter, FaLinkedin as Linkedin } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 
 const platforms = [

@@ -7,16 +7,11 @@ import {
   Globe, 
   ArrowRight,
   CheckCircle2,
-  Twitter,
-  Youtube,
-  Instagram,
-  Facebook,
-  Linkedin,
-  Music2,
   MessageSquare,
   BarChart3,
   RefreshCcw
 } from "lucide-react";
+import { FaYoutube as Youtube, FaFacebook as Facebook, FaTiktok as Music2, FaTwitter as Twitter, FaLinkedin as Linkedin, FaInstagram as Instagram } from "react-icons/fa";
 import Navbar from "@/components/Navbar";
 import { cn } from "@/lib/utils";
 import Link from "next/link";

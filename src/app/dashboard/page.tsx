@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession, signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
 import { 
   LayoutDashboard, 
   Users, 
@@ -8,39 +9,79 @@ import {
   Settings, 
   LogOut, 
   Plus, 
-  Youtube, 
-  Facebook, 
-  Music2,
   TrendingUp,
   Eye,
   MessageSquare,
   Share2,
   AlertCircle
 } from "lucide-react";
+import { FaYoutube as Youtube, FaFacebook as Facebook, FaTiktok as Music2 } from "react-icons/fa";
 import { motion, AnimatePresence } from "motion/react";
 import { ConnectButtons } from "@/components/ConnectButtons";
 import { MultiPostComposer } from "@/components/MultiPostComposer";
 import { cn } from "@/lib/utils";
 
-const MOCK_ACCOUNTS = [
-  { id: "yt-1", platform: "YouTube", name: "Artist Channel", handle: "@artist_official", followers: "1.2M", icon: Youtube, color: "text-red-500" },
-  { id: "fb-1", platform: "Facebook", name: "Artist Page", handle: "/artist.official", followers: "850K", icon: Facebook, color: "text-blue-500" },
-  { id: "tk-1", platform: "TikTok", name: "Artist TikTok", handle: "@artist_tok", followers: "2.4M", icon: Music2, color: "text-pink-500" },
-];
-
-const MOCK_STATS = [
-  { label: "Total Views", value: "4.8M", change: "+12.5%", icon: Eye },
-  { label: "Engagement", value: "852K", change: "+8.2%", icon: MessageSquare },
-  { label: "Shares", value: "124K", change: "+15.1%", icon: Share2 },
-  { label: "Growth", value: "+24K", change: "+5.4%", icon: TrendingUp },
-];
+interface YouTubeData {
+  title: string;
+  subscriberCount: string;
+  videoCount: string;
+}
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const isAuthenticated = status === "authenticated";
   const isLoading = status === "loading";
-  const accountsCount = session?.user?.accountsCount || 0;
+  
+  const [youtubeData, setYoutubeData] = useState<YouTubeData | null>(null);
+  const [isFetchingYoutube, setIsFetchingYoutube] = useState(false);
+
+  useEffect(() => {
+    async function fetchYouTubeData() {
+      if ((session as any)?.provider === "google") {
+        setIsFetchingYoutube(true);
+        try {
+          const response = await fetch("/api/youtube");
+          const data = await response.json();
+          if (!data.error) {
+            setYoutubeData(data);
+          }
+        } catch (err) {
+          console.error("YouTube API error", err);
+        } finally {
+          setIsFetchingYoutube(false);
+        }
+      }
+    }
+
+    if (isAuthenticated) {
+      fetchYouTubeData();
+    }
+  }, [session, isAuthenticated]);
+
+  const accountsCount = (session as any)?.user?.accountsCount || (youtubeData ? 1 : 0);
   const isArtistMode = !isAuthenticated || accountsCount === 0;
+
+  // Dynamic Accounts
+  const accounts = isArtistMode ? [
+    { id: "yt-1", platform: "YouTube", name: "Artist Channel", handle: "@artist_official", followers: "1.2M", icon: Youtube, color: "text-red-500" },
+    { id: "fb-1", platform: "Facebook", name: "Artist Page", handle: "/artist.official", followers: "850K", icon: Facebook, color: "text-blue-500" },
+    { id: "tk-1", platform: "TikTok", name: "Artist TikTok", handle: "@artist_tok", followers: "2.4M", icon: Music2, color: "text-pink-500" },
+  ] : youtubeData ? [
+    { id: "yt-real", platform: "YouTube", name: youtubeData.title, handle: "YouTube Channel", followers: youtubeData.subscriberCount, icon: Youtube, color: "text-red-500" }
+  ] : [];
+
+  // Dynamic Stats
+  const stats = isArtistMode ? [
+    { label: "Total Views", value: "4.8M", change: "+12.5%", icon: Eye },
+    { label: "Engagement", value: "852K", change: "+8.2%", icon: MessageSquare },
+    { label: "Shares", value: "124K", change: "+15.1%", icon: Share2 },
+    { label: "Growth", value: "+24K", change: "+5.4%", icon: TrendingUp },
+  ] : youtubeData ? [
+    { label: "Subscribers", value: youtubeData.subscriberCount, change: "Live", icon: Users },
+    { label: "Total Videos", value: youtubeData.videoCount, change: "Live", icon: Eye },
+    { label: "Engagement", value: "N/A", change: "-", icon: MessageSquare },
+    { label: "Growth", value: "N/A", change: "-", icon: TrendingUp },
+  ] : [];
 
   if (isLoading) {
     return (
@@ -119,7 +160,7 @@ export default function DashboardPage() {
                 </span>
               </div>
               <h1 className="text-5xl lg:text-7xl font-black italic tracking-tighter uppercase leading-none">
-                {isAuthenticated ? `Welcome, ${session.user?.name?.split(' ')[0]}` : "Artist Mode"}
+                {isAuthenticated ? `Welcome, ${session.user?.name?.split(' ')[0] || 'Creator'}` : "Artist Mode"}
               </h1>
               <p className="text-zinc-500 max-w-xl font-medium leading-relaxed">
                 {isAuthenticated 
@@ -138,7 +179,7 @@ export default function DashboardPage() {
 
           {/* Stats Grid */}
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {MOCK_STATS.map((stat, i) => (
+            {stats.map((stat, i) => (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -185,8 +226,8 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <AnimatePresence mode="wait">
-                {isArtistMode ? (
-                  MOCK_ACCOUNTS.map((account, i) => (
+                {accounts.length > 0 ? (
+                  accounts.map((account, i) => (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -212,7 +253,7 @@ export default function DashboardPage() {
                           </div>
                           <div className="flex flex-col items-end">
                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
-                              Followers
+                              {account.platform === 'YouTube' ? 'Subscribers' : 'Followers'}
                             </span>
                             <span className="text-2xl font-black italic tracking-tighter">
                               {account.followers}

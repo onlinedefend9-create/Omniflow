@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Geist } from "next/font/google";
+import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./providers";
+import Providers from "@/components/Providers";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-display" });
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "OneFlow | One Flow. All Platforms. Global Impact.",
@@ -62,7 +62,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${geist.variable}`}>
+    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <head>
         <meta name="tiktok-developers-site-verification" content="1NN0n1viZIBsPmHOlNFFcR4TLxonnf2U" />
         <script
